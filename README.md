@@ -6,8 +6,7 @@ Ce projet est une plateforme pédagogique développée avec Django et Vue.js. Il
 ## Prérequis
 Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
 - [Python 3.11](https://www.python.org/downloads/)
-- [Node.js] et [npm](https://nodejs.org/en/download/)
-- [pip](https://pip.pypa.io/en/stable/installation/)
+- [Node.js](https://nodejs.org/fr/)
 
 ## Installation
 

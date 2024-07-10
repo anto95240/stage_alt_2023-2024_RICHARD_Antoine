@@ -19,9 +19,9 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
 
 2. Créez un environnement virtuel et activez-le :
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # macOS/Linux
-    .\venv\Scripts\activate  # Windows
+    python -m venv .venv
+    source .venv/bin/activate  # macOS/Linux
+    .venv\Scripts\activate  # Windows
 
 3. Installez les dépendances :
     ```bash

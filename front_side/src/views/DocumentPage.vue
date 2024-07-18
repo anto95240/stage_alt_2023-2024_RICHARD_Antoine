@@ -122,7 +122,7 @@
   import Cookies from 'js-cookie';
   
   export default {
-    name: 'DashboardPage',
+    name: 'DocumentPage',
     props: ['role'],
     data() {
       return {

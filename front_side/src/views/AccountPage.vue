@@ -120,7 +120,7 @@
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
                       <label for="inputAge" class="form-label">Age</label>
-                      <input type="text" class="form-control" id="inputAge" name="Age" v-model="Age" />
+                      <input type="date" class="form-control" id="inputAge" name="Age" v-model="Age" />
                       <small v-if="errors.Age" class="text-danger">{{ errors.Age }}</small>
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
@@ -129,7 +129,7 @@
                       <small v-if="errors.Spetialisation" class="text-danger">{{ errors.Spetialisation }}</small>
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
-                      <label for="inputPassword" class="form-label">Mot de Passe</label>
+                      <label for="inputPassword" class="form-label">Nouveau Mot de Passe</label>
                       <input type="password" class="form-control" id="inputPassword" name="Password" v-model="Password" />
                       <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
                     </div>
@@ -161,12 +161,11 @@
   import Cookies from 'js-cookie';
 
 export default {
-  name: 'DashboardPage',
+  name: 'AccountPage',
   props: ['role'],
   data() {
     return {
       isSidebarExpanded: false,
-      // Champs du formulaire
       FirstName: '',
       LastName: '',
       Address: '',
@@ -181,11 +180,31 @@ export default {
   },
   mounted() {
     this.getUserFromCookies();
+    this.getUserDetails();
   },
   methods: {
     getUserFromCookies() {
       this.firstName = Cookies.get('FirstName') || '';
       this.lastName = Cookies.get('LastName') || '';
+    },
+    async getUserDetails() {
+      try {
+        const accessToken = Cookies.get('access_token');
+        const response = await axios.get(`/${this.role}/user/`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+        const user = response.data;
+        this.FirstName = user.FirstName;
+        this.LastName = user.LastName;
+        this.Address = user.Address;
+        this.Email = user.Email;
+        this.Age = user.Age;
+        this.Spetialisation = user.Specialization;
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
     },
     navigateToNotification() {
       this.$router.push({ name: 'NotificationPage', params: { role: this.role } });
@@ -221,89 +240,6 @@ export default {
 
       // Rediriger vers la page de connexion
       this.$router.push({ name: 'LogOut' });
-    },
-    getUserInfo() {
-      axios.get(`/${this.role}/user/`)
-      .then(response => {
-        if (response.data.success) {
-          const user = response.data.user;
-          this.FirstName = user.firstname;
-          this.LastName = user.lastname;
-          this.Address = user.address;
-          this.Email = user.email;
-          this.Age = user.age;
-          this.Specialisation = user.specialisation;
-          // Ne récupérez pas les mots de passe pour les afficher
-          console.log('Informations de l\'utilisateur récupérées:', user);
-        } else {
-          console.error('Erreur lors de la récupération des informations:', response.data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des informations:', error);
-      });
-    },
-    validEmail(email) {
-      const re = /\S+@\S+\.\S+/;
-      return re.test(email);
-    },
-    submitForm() {
-      this.errors = {};
-
-      if (!this.FirstName) {
-        this.errors.FirstName = 'Le prénom est requis.';
-      }
-      if (!this.LastName) {
-        this.errors.LastName = 'Le nom est requis.';
-      }
-      if (!this.Address) {
-        this.errors.Address = 'L\'adresse est requise.';
-      }
-      if (!this.Email) {
-        this.errors.Email = 'L\'email est requis.';
-      } else if (!this.validEmail(this.Email)) {
-        this.errors.Email = 'L\'email doit être valide.';
-      }
-      if (!this.Age) {
-        this.errors.Age = 'L\'âge est requis.';
-      } else if (isNaN(this.Age)) {
-        this.errors.Age = 'L\'âge doit être un nombre.';
-      }
-      if (!this.Spetialisation) {
-        this.errors.Spetialisation = 'La spécialisation est requise.';
-      }
-      if (!this.Password) {
-        this.errors.Password = 'Le mot de passe est requis.';
-      }
-
-      if (Object.keys(this.errors).length === 0) {
-        const userData = {
-          firstname: this.FirstName,
-          lastname: this.LastName,
-          address: this.Address,
-          email: this.Email,
-          age: this.age,
-          specialisation: this.specialisation,
-          password: this.password1
-        };
-
-      axios.put(`/${this.role}/user-update/`, userData)
-        .then(response => {
-          if (response.data.success) {
-            console.log('Mise à jour réussie:', response.data.message);
-            // Effectuez toute autre action après la mise à jour réussie, comme afficher un message ou rediriger
-          } else {
-            this.errors = response.data.errors;
-            console.error('Erreur lors de la mise à jour:', response.data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Erreur lors de la mise à jour:', error);
-        });
-    }
-    },
-    mounted() {
-      this.getUserInfo();
     }
   }
 };

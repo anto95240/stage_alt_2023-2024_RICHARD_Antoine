@@ -9,7 +9,7 @@
 
 <script>
     export default {
-        name: 'DashboardPage',
+        name: 'LogOut',
         props: ['role'],
         methods: {
             navigateToLogin() {

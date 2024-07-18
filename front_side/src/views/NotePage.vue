@@ -150,7 +150,7 @@
   import Cookies from 'js-cookie';
   
   export default {
-    name: 'DashboardPage',
+    name: 'NotePage',
     props: ['role'],
     data() {
       return {

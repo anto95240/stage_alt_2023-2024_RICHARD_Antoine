@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -79,3 +79,10 @@ def role_login(request, role):
             return Response({'success': False, 'message': 'Mot de passe incorrect'}, status=status.HTTP_401_UNAUTHORIZED)
     except User.DoesNotExist:
         return Response({'success': False, 'message': 'L\'utilisateur n\'existe pas'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  # Autoriser seulement les utilisateurs authentifiés
+def get_user_details(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data)

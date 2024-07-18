@@ -134,7 +134,7 @@
   import Cookies from 'js-cookie';
   
   export default {
-    name: 'DashboardPage',
+    name: 'VieScolaire',
     props: ['role'],
     data() {
       return {

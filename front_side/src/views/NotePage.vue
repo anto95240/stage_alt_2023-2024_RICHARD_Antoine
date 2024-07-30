@@ -88,10 +88,6 @@
           <div class="col-lg-6 col-md-6">
             <div class="card card-chart">
               <div class="card-header">
-                  <!-- <a class="d-flex gap-2 text-dark w-50" href="">
-                      <p class="card-title">Mes dernières notes</p>
-                      <p class="card-title">></p> 
-                  </a>                       -->
                 <div class="dropdown">
                 </div>
               </div>
@@ -118,10 +114,6 @@
           <div class="col-lg-6 col-md-6">
             <div class="card card-chart">
               <div class="card-header">
-                  <!-- <a class="d-flex gap-2 text-dark w-75" href="">
-                      <p class="card-title">Mes dernières absences/retards</p>
-                      <p class="card-title">></p> 
-                  </a> -->
                 <div class="dropdown">
                 </div>
               </div>
@@ -192,14 +184,9 @@
       this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
-        // Supprimer les cookies ou le local storage
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        Cookies.remove('role');
         Cookies.remove('FirstName');
         Cookies.remove('LastName');
-
-        // Rediriger vers la page de connexion
+        Cookies.remove('UserId');
         this.$router.push({ name: 'LogOut' });
       }
     }

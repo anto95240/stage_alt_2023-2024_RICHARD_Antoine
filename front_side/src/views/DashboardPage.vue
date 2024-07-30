@@ -87,10 +87,11 @@
       </nav>
       <!-- End Navbar -->
       <div class="panel-header panel-header-lg">
-        <a class="d-flex gap-2 text-dark planning w-25" @click="navigateToCours">
+        <a class="d-flex gap-2 text-dark planning w-25" style="height: 14%;" @click="navigateToCours">
           <h1 class="text-white ms-5">Planning</h1>
           <h1 class="text-white ms-3">></h1>
-        </a>
+        </a>        
+        <CourseCalendar />                   
       </div>
       <div class="content">
         <div class="row">
@@ -100,7 +101,7 @@
                   <a class="d-flex gap-2 text-dark w-50" @click="navigateToNote">
                       <p class="card-title">Mes dernières notes</p>
                       <p class="card-title">></p> 
-                  </a>                      
+                  </a> 
                 <div class="dropdown">
                 </div>
               </div>
@@ -164,10 +165,15 @@
 </template>
   
 <script>
-  import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
+import 'vue-cal/dist/vuecal.css';
+import CourseCalendar from '../components/SmallCalendar.vue';
   
   export default {
     name: 'DashboardPage',
+    components: {
+      CourseCalendar
+    },
     props: ['role'],
     data() {
       return {
@@ -209,14 +215,9 @@
       this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
-        // Supprimer les cookies ou le local storage
         Cookies.remove('FirstName');
         Cookies.remove('LastName');
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        Cookies.remove('role');
-
-        // Rediriger vers la page de connexion
+        Cookies.remove('UserId');
         this.$router.push({ name: 'LogOut' });
       }
     }

@@ -19,8 +19,8 @@
         </div>
         <div class="mb-3 d-flex flex-column align-items-start text-start">
           <label for="inputPassword5" class="form-label">Mot de Passe</label>
-          <input type="password" id="inputPassword5" class="form-control" aria-describedby="PasswordHelpBlock" name="password" v-model="password">
-          <small v-if="errors.password" class="text-danger">{{ errors.password }}</small>
+          <input type="password" id="inputPassword5" class="form-control" aria-describedby="PasswordHelpBlock" name="Password" v-model="Password">
+          <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
         </div>
         <div class="col-12">
           <button type="submit" class="btn text-white w-100 rounded-3">Se connecter</button>
@@ -32,7 +32,6 @@
 
 <script>
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 export default {
   name: 'LoginPage',
@@ -40,10 +39,10 @@ export default {
   data() {
     return {
       Email: "",
-      password: "",
+      Password: "",
       errors: {
         Email: "",
-        password: "",
+        Password: "",
         wrong_credentials: "",
       }
     }
@@ -52,46 +51,27 @@ export default {
     submitForm() {
       this.errors = {
         Email: "",
-        password: "",
+        Password: "",
         wrong_credentials: ""
       };
 
       if (!this.Email) {
-        this.errors.Email = "L'email est requis.";
+        this.errors.Email = "L'Email est requis.";
         return;
       }
-      if (!this.password) {
-        this.errors.password = "Le mot de passe est requis.";
+      if (!this.Password) {
+        this.errors.Password = "Le mot de passe est requis.";
         return;
       }
 
-      axios.post(`/${this.role}-login/`, {
+      axios.post(`/login/`, {
         Email: this.Email,
-        password: this.password
+        Password: this.Password
+      }, {
+        withCredentials: true
       })
       .then(response => {
         if (response.data.success) {
-          const user = response.data.user;
-          const FirstName = user.FirstName;
-          const LastName = user.LastName;
-
-          // Stockage des tokens JWT dans les cookies
-          const access_token = response.data.access;
-          const refresh_token = response.data.refresh;
-
-          // Exemple de stockage des tokens dans les cookies avec une durée de vie
-          const now = new Date();
-          const accessTokenExpires = new Date(now.getTime() + 3600 * 1000); // Expiration dans 1 heure
-          Cookies.set('access_token', access_token, { expires: accessTokenExpires, path: '/' });
-
-          const refreshTokenExpires = new Date(now.getTime() + 7 * 24 * 3600 * 1000); // Expiration dans 7 jours
-          Cookies.set('refresh_token', refresh_token, { expires: refreshTokenExpires, path: '/' });
-
-          // Stockage d'autres informations dans les cookies si nécessaire
-          Cookies.set('role', this.role, { path: '/' });
-          Cookies.set('FirstName', FirstName, { path: '/' });
-          Cookies.set('LastName', LastName, { path: '/' });
-
 
           this.navigateToDashboard();
         } else {

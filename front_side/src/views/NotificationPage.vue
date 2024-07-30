@@ -85,33 +85,9 @@
       </div>
       <div class="content">
         <div class="row">
-          <!-- <div class="col-lg-4">
-            <div class="card card-chart">
-              <div class="card-header">
-                  <a class="d-flex gap-2 text-dark w-50" href="">
-                      <p class="card-title">Mes dernières notes</p>
-                      <p class="card-title">></p> 
-                  </a>                      
-                <div class="dropdown">
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div> -->
           <div class="col-lg-10 col-md-6 mx-auto">
             <div class="card card-chart">
               <div class="card-header">
-                  <!-- <a class="d-flex gap-2 text-dark w-75" href="">
-                      <p class="card-title">Mes dernières absences/retards</p>
-                      <p class="card-title">></p> 
-                  </a> -->
                 <div class="dropdown">
                 </div>
               </div>
@@ -125,24 +101,6 @@
               </div>
             </div>
           </div>
-          <!-- <div class="col-lg-4 col-md-6">
-            <div class="card card-chart">
-              <div class="card-header">
-                  <a class="d-flex gap-2 text-dark w-50" href="">
-                      <p class="card-title">Mes documents</p>
-                      <p class="card-title">></p> 
-                  </a>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
-            </div>
-          </div> -->
         </div>
       </div>
       <footer class="footer mt-auto py-3 bg-light">
@@ -200,14 +158,9 @@
       this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
-        // Supprimer les cookies ou le local storage
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        Cookies.remove('role');
         Cookies.remove('FirstName');
         Cookies.remove('LastName');
-
-        // Rediriger vers la page de connexion
+        Cookies.remove('UserId');
         this.$router.push({ name: 'LogOut' });
       }
     }

@@ -176,14 +176,9 @@
       this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
-        // Supprimer les cookies ou le local storage
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        Cookies.remove('role');
         Cookies.remove('FirstName');
         Cookies.remove('LastName');
-
-        // Rediriger vers la page de connexion
+        Cookies.remove('UserId');
         this.$router.push({ name: 'LogOut' });
       }
     }

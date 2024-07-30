@@ -34,13 +34,13 @@
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="inputPassword1" class="form-label">Mot de Passe</label>
-          <input type="password" class="form-control" id="inputPassword1" name="password1" v-model="password1" />
-          <small v-if="errors.password1" class="text-danger">{{ errors.password1 }}</small>
+          <input type="password" class="form-control" id="inputPassword1" name="Password1" v-model="Password1" />
+          <small v-if="errors.Password1" class="text-danger">{{ errors.Password1 }}</small>
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="inputPassword2" class="form-label">Confirmer Mot de Passe</label>
-          <input type="password" class="form-control" id="inputPassword2" name="password2" v-model="password2">
-          <small v-if="errors.password2" class="text-danger">{{ errors.password2 }}</small>
+          <input type="password" class="form-control" id="inputPassword2" name="Password2" v-model="Password2">
+          <small v-if="errors.Password2" class="text-danger">{{ errors.Password2 }}</small>
         </div>
         <div class="notification is-danger" v-if="Object.keys(errors).length">
           <p v-for="(error, index) in Object.values(errors)" :key="index">{{ error }}</p>
@@ -55,7 +55,7 @@
 
 <script>
 import axios from 'axios';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 export default {
   name: 'RegisterPage',
@@ -66,15 +66,15 @@ export default {
       LastName: '',
       Address: '',
       Email: '',
-      password1: '',
-      password2: '',
+      Password1: '',
+      Password2: '',
       errors: {
         FirstName: '',
         LastName: '',
         Address: '',
         Email: '',
-        password1: '',
-        password2: '',
+        Password1: '',
+        Password2: '',
         wrong_credentials: '',
       },
     };
@@ -92,7 +92,9 @@ export default {
       this.$router.push({ name: 'LoginPage', params: { role: this.role } });
     },
     submitForm() {
-      this.errors = {};
+
+      this.errors = {
+      };
 
       // Validation des champs
       if (!this.FirstName) {
@@ -107,14 +109,14 @@ export default {
       if (!this.Email) {
         this.errors.Email = "L'email est requis.";
       }
-      if (!this.password1) {
-        this.errors.password1 = "Le mot de passe est requis.";
+      if (!this.Password1) {
+        this.errors.Password1 = "Le mot de passe est requis.";
       }
-      if (!this.password2) {
-        this.errors.password2 = "La confirmation du mot de passe est requise.";
+      if (!this.Password2) {
+        this.errors.Password2 = "La confirmation du mot de passe est requise.";
       }
-      if (this.password1 !== this.password2) {
-        this.errors.password2 = "Les mots de passe ne correspondent pas.";
+      if (this.Password1 !== this.Password2) {
+        this.errors.Password2 = "Les mots de passe ne correspondent pas.";
       }
 
       // Arrêter si des erreurs sont présentes
@@ -128,35 +130,15 @@ export default {
         LastName: this.LastName,
         Address: this.Address,
         Email: this.Email,
-        password1: this.password1,
-        password2: this.password2
+        Password1: this.Password1,
+        Password2: this.Password2
       };
 
-      // Envoyer les données à l'API via Axios
-      axios.post(`/${this.role}-register/`, formData)
+
+      axios.post(`/register/`, formData)
         .then(response => {
 
           if (response.data.success) {
-            const user = response.data.user;
-            const FirstName = user.FirstName;
-            const LastName = user.LastName;
-
-            // Stockage des tokens JWT dans les cookies
-            const access_token = response.data.access;
-            const refresh_token = response.data.refresh;
-
-            // Exemple de stockage des tokens dans les cookies avec une durée de vie
-            const now = new Date();
-            const accessTokenExpires = new Date(now.getTime() + 3600 * 1000); // Expiration dans 1 heure
-            Cookies.set('access_token', access_token, { expires: accessTokenExpires, path: '/' });
-
-            const refreshTokenExpires = new Date(now.getTime() + 7 * 24 * 3600 * 1000); // Expiration dans 7 jours
-            Cookies.set('refresh_token', refresh_token, { expires: refreshTokenExpires, path: '/' });
-
-            // Stockage d'autres informations dans les cookies si nécessaire
-            Cookies.set('role', this.role, { path: '/' });
-            Cookies.set('FirstName', FirstName, { path: '/' });
-            Cookies.set('LastName', LastName, { path: '/' });
 
             this.navigateToDashboard();
           } else {
@@ -175,7 +157,6 @@ export default {
   }
 };
 </script>
-
 
 <style>
 .container {

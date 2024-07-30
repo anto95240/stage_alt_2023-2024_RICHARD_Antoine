@@ -87,17 +87,9 @@
         <div class="row">
           <div class="col-lg col-md-10 mx-auto">
             <div class="card card-chart">
-              <div class="card-header">
-                    <p class="card-title">Mes cours</p>
-                <div class="dropdown">
-                </div>
-              </div>
               <div class="card-body">
                 <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
+                  <CourseCalendar />
                 </div>
               </div>
             </div>
@@ -115,10 +107,14 @@
     
 <script>
   import Cookies from 'js-cookie';
+  import CourseCalendar from '../components/BigCalendar.vue';
   
   export default {
     name: 'CoursPage',
     props: ['role'],
+    components: {
+      CourseCalendar
+    },
     data() {
       return {
         isSidebarExpanded: false,
@@ -159,14 +155,9 @@
       this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
-        // Supprimer les cookies ou le local storage
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        Cookies.remove('role');
         Cookies.remove('FirstName');
         Cookies.remove('LastName');
-
-        // Rediriger vers la page de connexion
+        Cookies.remove('UserId');
         this.$router.push({ name: 'LogOut' });
       }
     }
@@ -359,5 +350,9 @@ a.sidebar-link {
   text-decoration: underline !important;
   color: rgb(255, 255, 255) !important;
   cursor: pointer;
+}
+
+.card-chart .chart-area {
+    height: 0%;
 }
 </style>

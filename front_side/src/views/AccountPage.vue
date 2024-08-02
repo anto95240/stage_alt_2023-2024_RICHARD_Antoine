@@ -125,15 +125,20 @@
                       <input type="email" class="form-control" id="inputEmail4" name="Email" v-model="Email" />
                       <small v-if="errors.Email" class="text-danger">{{ errors.Email }}</small>
                     </div>
-                    <div class="col-md-6 d-flex flex-column align-items-start">
+                    <div class="col-md-12 d-flex flex-column align-items-start">
                       <label for="inputAge" class="form-label">Date de naissance</label>
                       <input type="text" class="form-control" id="inputAge" name="Age" v-model="Age" />
                       <small v-if="errors.Age" class="text-danger">{{ errors.Age }}</small>
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
                       <label for="inputSpecialization" class="form-label">Spetialisation</label>
-                      <input type="text" class="form-control" id="inputSpecialization" name="Specialization" v-model="Specialization">
+                      <input type="text" class="form-control" id="inputSpecialization" name="Specialization" v-model="Specialization" :disabled="true">
                       <small v-if="errors.Specialization" class="text-danger">{{ errors.Specialization }}</small>
+                    </div>
+                    <div class="col-md-6 d-flex flex-column align-items-start">
+                      <label for="inputClass" class="form-label">Classe</label>
+                      <input type="text" class="form-control" id="inputClass" name="Class" v-model="Class" :disabled="true">
+                      <small v-if="errors.Class" class="text-danger">{{ errors.Class }}</small>
                     </div>
                     <div class="col-12 d-flex flex-column align-items-start">
                       <label for="inputPassword" class="form-label">Nouveau Mot de passe</label>
@@ -168,6 +173,7 @@
         Email: '',
         Age: '',
         Specialization: '',
+        Class: '',
         Password: '',
         errors: {},
         isSidebarExpanded: false,
@@ -193,10 +199,10 @@
             this.LastName = this.userInfo.LastName;
             this.Address = this.userInfo.Address;
             this.Email = this.userInfo.Email;
-            // this.Photo = this.userInfo.Photo || this.Photo;
             this.Photo = this.userInfo.Photo ? `data:image/jpeg;base64,${this.userInfo.Photo}` : this.Photo;
             this.Age = this.userInfo.Age;
             this.Specialization = this.userInfo.Specialization;
+            this.Class = this.userInfo.Class;
           })
           .catch(error => {
             console.error('Erreur lors de la récupération des informations utilisateur.', error);
@@ -219,25 +225,13 @@
         }
       },
       submitForm() {
-        // const FormData = {
-        //   id: this.userid,
-        //   FirstName: this.FirstName,
-        //   LastName: this.LastName,
-        //   Address: this.Address,
-        //   Email: this.Email,
-        //   Age: this.Age,
-        //   Specialization: this.Specialization,
-        //   Photo: this.Photo,
-        //   Password: this.Password,
-        // };
-
         const formData = new FormData();
         formData.append('FirstName', this.FirstName);
         formData.append('LastName', this.LastName);
         formData.append('Address', this.Address);
         formData.append('Email', this.Email);
         formData.append('Age', this.Age);
-        formData.append('Specialization', this.Specialization);
+        // formData.append('Specialization', this.Specialization);
         formData.append('Password', this.Password);
         if (this.profileImageFile) {
           formData.append('Photo', this.profileImageFile);
@@ -282,10 +276,15 @@
         this.$router.push({ name: 'NotificationPage', params: { role: this.role } });
       },
       logout() {
-        Cookies.remove('FirstName');
-        Cookies.remove('LastName');
-        Cookies.remove('UserId');
-        this.$router.push({ name: 'LogOut' });
+        axios.post('/logout/', {}, { withCredentials: true })
+          .then(response => {
+            if (response.data.success) {
+              this.$router.push({ name: 'LogOut' });
+            }
+          })
+          .catch(error => {
+            console.error('Une erreur est survenue lors de la déconnexion.', error);
+          });
       },
       toggleSidebar() {
         this.isSidebarExpanded = !this.isSidebarExpanded;

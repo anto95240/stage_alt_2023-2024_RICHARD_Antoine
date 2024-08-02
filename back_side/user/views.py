@@ -4,10 +4,9 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .models import User
+from .models import *
 from .serializers import UserSerializer
 from django.http import JsonResponse
-
 
 # Vue pour l'inscription
 @api_view(['POST'])
@@ -34,7 +33,7 @@ def role_register(request, role):
     try:
         user = User.objects.create(
             Email=email,
-            Password=password1,
+            Password=make_password(password1),  # Hacher le mot de passe
             Role=role,
             Address=address,
             FirstName=first_name,
@@ -48,7 +47,7 @@ def role_register(request, role):
 
         response.set_cookie('FirstName', user.FirstName, secure=True, samesite='Strict')
         response.set_cookie('LastName', user.LastName, secure=True, samesite='Strict')
-        response.set_cookie('UserId', user.id, secure=True, samesite='Strict')        
+        response.set_cookie('UserId', user.id, secure=True, samesite='Strict')
         
         return response
     except Exception as e:
@@ -82,6 +81,17 @@ def role_login(request):
     except User.DoesNotExist:
         return Response({'success': False, 'message': 'L\'utilisateur n\'existe pas'}, status=status.HTTP_404_NOT_FOUND)
 
+# Vue pour la déconnexion
+@api_view(['POST'])
+def logout_view(request):
+    response = Response({"success": True, "message": "Déconnexion réussie"}, status=status.HTTP_200_OK)
+    response.delete_cookie('csrftoken')
+    response.delete_cookie('sessionid')
+    response.delete_cookie('FirstName')
+    response.delete_cookie('LastName')
+    response.delete_cookie('UserId')
+    return response
+
 # Vue pour obtenir les détails utilisateur
 @api_view(['GET'])
 def user_info(request, user_id):
@@ -94,7 +104,8 @@ def user_info(request, user_id):
             "Email": user.Email,
             "Age": user.Age,
             "Photo": None,
-            "Specialization": user.Specialization,
+            "Specialization": user.Specialization.Specialization if user.Specialization else None,
+            "Class": user.Class.Class if user.Class else None,
         }
         if user.Photo:
             with open(user.Photo.path, "rb") as image_file:
@@ -107,19 +118,7 @@ def user_info(request, user_id):
     except User.DoesNotExist:
         return JsonResponse({'error': 'Utilisateur non trouvé'}, status=404)
 
-# Vue pour mettre à jour les détails utilisateur
-# @api_view(['PUT'])
-# def user_update(request):
-#     user = request.user
-    
-#     data = request.data
-#     serializer = UserSerializer(user, data=data, partial=True)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response({'success': True, 'user': serializer.data}, status=status.HTTP_200_OK)
-#     return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-# views.py
+# Vue pour la mise à jour de l'utilisateur
 @api_view(['PUT'])
 def user_update(request, user_id):
     try:
@@ -138,10 +137,6 @@ def user_update(request, user_id):
             user.Email = data['Email']
         if 'Age' in data:
             user.Age = data['Age']
-        if 'Specialization' in data:
-            user.Specialization = data['Specialization']
-        
-        # Handle photo file upload
         if 'Photo' in request.FILES:
             user.Photo = request.FILES['Photo']
         
@@ -151,4 +146,7 @@ def user_update(request, user_id):
     except User.DoesNotExist:
         return Response({'error': 'Utilisateur non trouvé.'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
+        # Ajout de logs pour capturer les informations de l'exception
+        import traceback
+        print(traceback.format_exc())
         return Response({'error': 'Une erreur est survenue lors de la mise à jour.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

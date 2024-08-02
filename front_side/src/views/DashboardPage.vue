@@ -1,9 +1,4 @@
 <template>
-  <!-- <div>
-    <p v-if="isAuthenticated">Utilisateur connecté en tant que {{ user.username }}</p>
-    <p v-else>Utilisateur non connecté</p>
-    <button @click="handleLogout">Déconnexion</button>
-  </div> -->
   <div class="wrapper">
     <aside :class="{ expand: isSidebarExpanded }" id="sidebar">
         <div class="d-flex">
@@ -91,7 +86,7 @@
           <h1 class="text-white ms-5">Planning</h1>
           <h1 class="text-white ms-3">></h1>
         </a>        
-        <CourseCalendar />                   
+        <CourseSmallCalendar :role="role" />                 
       </div>
       <div class="content">
         <div class="row">
@@ -119,7 +114,27 @@
             <div class="card card-chart">
               <div class="card-header">
                   <a class="d-flex gap-2 text-dark w-75" @click="navigateToVieScolaire">
-                      <p class="card-title">Mes dernières absences/retards</p>
+                      <p class="card-title">Mes dernières absences</p>
+                      <p class="card-title">></p> 
+                  </a>
+                <div class="dropdown">
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart-area">
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="stats">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="card card-chart">
+              <div class="card-header">
+                  <a class="d-flex gap-2 text-dark w-75" @click="navigateToVieScolaire">
+                      <p class="card-title">Mes derniers retards</p>
                       <p class="card-title">></p> 
                   </a>
                 <div class="dropdown">
@@ -167,61 +182,67 @@
 <script>
 import Cookies from 'js-cookie';
 import 'vue-cal/dist/vuecal.css';
-import CourseCalendar from '../components/SmallCalendar.vue';
+import CourseSmallCalendar from '../components/SmallCalendar.vue';
+import axios from 'axios';
   
-  export default {
-    name: 'DashboardPage',
-    components: {
-      CourseCalendar
+export default {
+  name: 'DashboardPage',
+  components: {
+    CourseSmallCalendar
+  },
+  props: ['role'],
+  data() {
+    return {
+      isSidebarExpanded: false,
+      firstName: '',
+      lastName: '',
+    };
+  },
+  mounted() {
+    this.getUserFromCookies();
+  },
+  methods: {
+    getUserFromCookies() {
+      this.firstName = Cookies.get('FirstName') || '';
+      this.lastName = Cookies.get('LastName') || '';
     },
-    props: ['role'],
-    data() {
-      return {
-        isSidebarExpanded: false,
-        firstName: '',
-        lastName: '',
-      };
+    navigateToNote() {
+      this.$router.push({ name: 'NotePage', params: { role: this.role } });
     },
-    mounted() {
-      this.getUserFromCookies();
+    navigateToHome() {
+      this.$router.push({ name: 'DashboardPage', params: { role: this.role } });
     },
-    methods: {
-      getUserFromCookies() {
-        this.firstName = Cookies.get('FirstName') || '';
-        this.lastName = Cookies.get('LastName') || '';
-      },
-      navigateToNote() {
-        this.$router.push({ name: 'NotePage', params: { role: this.role } });
-      },
-      navigateToHome() {
-        this.$router.push({ name: 'DashboardPage', params: { role: this.role } });
-      },
-      navigateToCours() {
-        this.$router.push({ name: 'CoursPage', params: { role: this.role } });
-      },
-      navigateToDocument() {
-        this.$router.push({ name: 'DocumentPage', params: { role: this.role } });
-      },
-      navigateToVieScolaire() {
-        this.$router.push({ name: 'VieScolaire', params: { role: this.role } });
-      },
-      navigateToAccount() {
-        this.$router.push({ name: 'AccountPage', params: { role: this.role } });
-      },
-      navigateToNotification() {
-        this.$router.push({ name: 'NotificationPage', params: { role: this.role } });
-      },
-      toggleSidebar() {
-      this.isSidebarExpanded = !this.isSidebarExpanded;
-      },
-      logout() {
-        Cookies.remove('FirstName');
-        Cookies.remove('LastName');
-        Cookies.remove('UserId');
-        this.$router.push({ name: 'LogOut' });
-      }
+    navigateToCours() {
+      this.$router.push({ name: 'CoursPage', params: { role: this.role } });
+    },
+    navigateToDocument() {
+      this.$router.push({ name: 'DocumentPage', params: { role: this.role } });
+    },
+    navigateToVieScolaire() {
+      this.$router.push({ name: 'VieScolaire', params: { role: this.role } });
+    },
+    navigateToAccount() {
+      this.$router.push({ name: 'AccountPage', params: { role: this.role } });
+    },
+    navigateToNotification() {
+      this.$router.push({ name: 'NotificationPage', params: { role: this.role } });
+    },
+    toggleSidebar() {
+    this.isSidebarExpanded = !this.isSidebarExpanded;
+    },
+    logout() {
+      axios.post('/logout/', {}, { withCredentials: true })
+        .then(response => {
+          if (response.data.success) {
+            this.$router.push({ name: 'LogOut' });
+          }
+        })
+        .catch(error => {
+          console.error('Une erreur est survenue lors de la déconnexion.', error);
+        });
     }
-  };
+  }
+};
 </script>
 
 <style>

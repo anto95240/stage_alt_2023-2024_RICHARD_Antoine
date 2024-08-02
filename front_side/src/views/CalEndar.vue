@@ -4,6 +4,7 @@
       :events="events"
       :hide-view-selector="true"
       default-view="week"
+      :style="calendarStyle"
       :locale="locale" 
       active-view="week" 
       :disable-views="['years', 'year', 'month', 'day']"
@@ -40,7 +41,13 @@ export default {
     return {
       events: [],
       locale: 'fr',
-      userId: null
+      userId: null,
+      calendarStyle: {
+        // 'border-radius': '8px',
+        'padding': '10px',
+        'width': '100%',
+        'height': '200px' // Ajustez la hauteur en fonction de vos besoins
+      }
     };
   },
   methods: {
@@ -116,7 +123,6 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-  color: black;
 }
 
 .vuecal__event-title {

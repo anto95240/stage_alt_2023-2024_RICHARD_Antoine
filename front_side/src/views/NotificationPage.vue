@@ -114,6 +114,7 @@
   
 <script>
   import Cookies from 'js-cookie';
+  import axios from 'axios';
   
   export default {
     name: 'NotificationPage',
@@ -158,10 +159,15 @@
       this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
-        Cookies.remove('FirstName');
-        Cookies.remove('LastName');
-        Cookies.remove('UserId');
-        this.$router.push({ name: 'LogOut' });
+        axios.post('/logout/', {}, { withCredentials: true })
+          .then(response => {
+            if (response.data.success) {
+              this.$router.push({ name: 'LogOut' });
+            }
+          })
+          .catch(error => {
+            console.error('Une erreur est survenue lors de la déconnexion.', error);
+          });
       }
     }
   };

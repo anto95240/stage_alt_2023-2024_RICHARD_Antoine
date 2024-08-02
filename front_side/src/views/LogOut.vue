@@ -2,7 +2,7 @@
     <div class="container bg-lightgreen rounded-4 d-flex p-0 w-50 justify-content-center">
       <div class="d-flex flex-column w-50 gap-5 mt-5 pb-5">
         <h3>Vous avez été déconnecter</h3>
-        <button class="btn rounded-3" @click="navigateToLogin">Se connecter</button>
+        <button class="btn rounded-3" @click="navigateToHome">Se connecter</button>
       </div>        
     </div>
   </template>
@@ -12,8 +12,8 @@
         name: 'LogOut',
         props: ['role'],
         methods: {
-            navigateToLogin() {
-              this.$router.push({ name: 'LoginPage', params: { role: this.role } });
+            navigateToHome() {
+              this.$router.push({ name: 'HomePage', params: { role: this.role } });
             }
         }
     }

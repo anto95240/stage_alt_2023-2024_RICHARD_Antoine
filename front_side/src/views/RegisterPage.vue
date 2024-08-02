@@ -2,9 +2,7 @@
   <div class="container bg-lightgreen rounded-4 d-flex p-0 w-50 mx-auto">
     <div class="rounded-4 bg-white bienvenue d-flex flex-column">
       <h3 class="mx-auto">Espace {{ role }}</h3>
-      <template v-if="role !== 'admin'">
-        <button type="button" class="btn text-white w-75 m-auto rounded-3" @click="navigateToLogin">Se connecter</button>
-      </template>
+      <button type="button" class="btn text-white w-75 m-auto rounded-3" @click="navigateToLogin">Se connecter</button>
     </div>
     <div class="d-flex flex-column w-50 gap-5 mt-5 pb-5">
       <h3>INSCRIPTION</h3>
@@ -93,8 +91,7 @@ export default {
     },
     submitForm() {
 
-      this.errors = {
-      };
+      this.errors = {};
 
       // Validation des champs
       if (!this.FirstName) {
@@ -135,7 +132,9 @@ export default {
       };
 
 
-      axios.post(`/register/`, formData)
+      axios.post(`/${this.role}/register/`, formData, {
+        withCredentials: true
+        })
         .then(response => {
 
           if (response.data.success) {

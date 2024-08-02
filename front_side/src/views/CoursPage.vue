@@ -89,7 +89,7 @@
             <div class="card card-chart">
               <div class="card-body">
                 <div class="chart-area">
-                  <CourseCalendar />
+                  <CourseBigCalendar :role="role" />
                 </div>
               </div>
             </div>
@@ -106,14 +106,15 @@
 </template>
     
 <script>
+  import axios from 'axios';
   import Cookies from 'js-cookie';
-  import CourseCalendar from '../components/BigCalendar.vue';
+  import CourseBigCalendar from '../components/BigCalendar.vue';
   
   export default {
     name: 'CoursPage',
     props: ['role'],
     components: {
-      CourseCalendar
+      CourseBigCalendar
     },
     data() {
       return {
@@ -155,10 +156,15 @@
       this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
-        Cookies.remove('FirstName');
-        Cookies.remove('LastName');
-        Cookies.remove('UserId');
-        this.$router.push({ name: 'LogOut' });
+        axios.post('/logout/', {}, { withCredentials: true })
+          .then(response => {
+            if (response.data.success) {
+              this.$router.push({ name: 'LogOut' });
+            }
+          })
+          .catch(error => {
+            console.error('Une erreur est survenue lors de la déconnexion.', error);
+          });
       }
     }
   };

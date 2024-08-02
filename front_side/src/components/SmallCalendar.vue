@@ -5,19 +5,22 @@
       :hide-view-selector="true"
       default-view="week"
       :style="calendarStyle"
-      :locale="locale"
+      :locale="locale" 
+      active-view="week" 
+      :disable-views="['years', 'year', 'month', 'day']"
+      :time-from="8 * 60"
+      :time-to="18 * 60"
     >
-      <!-- Slot pour personnaliser les en-têtes des colonnes -->
-      <template v-slot:header="{ day, date }">
-        <div class="custom-header">
-          {{ getCustomHeader(day, date) }}
-        </div>
-      </template>
-
-      <!-- Slot pour personnaliser les événements -->
-      <template v-slot:event="event">
-        <div class="custom-event" :style="{ backgroundColor: event.event.backgroundColor }">
-          {{ event.event.title }}
+      <template v-slot:event="{ event }">
+        <div
+          class="vuecal__event"
+          :style="{ backgroundColor: event.backgroundColor }"
+        >
+          <div class="vuecal__event-title" v-html="event.title"></div>
+          <div class="vuecal__event-time">
+            {{ formatTime(event.start) }} - {{ formatTime(event.end) }}
+          </div>
+          <div class="vuecal__event-content">{{ event.content }}</div>
         </div>
       </template>
     </vue-cal>
@@ -25,6 +28,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 
@@ -32,17 +36,12 @@ export default {
   components: {
     VueCal
   },
+  props: ['role'],
   data() {
     return {
-      events: [
-          {
-          start: '2024-07-25T10:00:00',
-          end: '2024-07-25T12:00:00',
-          title: 'Meeting with John',
-          backgroundColor: '#ff5722',
-          },
-      ], 
-      locale: 'fr', // Langue du calendrier
+      events: [],
+      locale: 'fr',
+      userId: null,
       calendarStyle: {
         // 'border-radius': '8px',
         'padding': '10px',
@@ -52,22 +51,61 @@ export default {
     };
   },
   methods: {
-      getCustomHeader(day, date) {
-        // Map full names of days to abbreviations
-        const days = {
-          'Monday': 'Lu',
-          'Tuesday': 'Ma',
-          'Wednesday': 'Me',
-          'Thursday': 'Je',
-          'Friday': 'Ve',
-          'Saturday': 'Sa',
-          'Sunday': 'Di'
-        };
-
-        // Format the header as "Lu 22" for example
-        return `${days[day] || day} ${date.getDate()}`;
+    fetchEvents() {
+      if (!this.role || !this.userId) {
+        console.error("Role ou userId non définis");
+        return;
       }
+
+      const url = '/cours/';
+
+      axios.get(url, {
+        params: {
+          role: this.role,
+          user_id: this.userId
+        }
+      })
+      .then(response => {
+        console.log("Données reçues:", response.data);
+
+        this.events = response.data.map(course => ({
+          start: `${course.Date} ${course.StartTime}`,
+          end: `${course.Date} ${course.EndTime}`,
+          title: `${course.Subject} - <br> ${course.Teacher.LastName} ${course.Teacher.FirstName}`,
+          content: `Salle: ${course.Place}`,
+          backgroundColor: `${course.Color}` // Assurez-vous que la propriété est correcte
+        }));
+
+        console.log("Événements transformés:", this.events);
+      })
+      .catch(error => {
+        console.error("Erreur lors de la récupération des événements:", error.response || error);
+      });
+    },
+    getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    },
+    onDateClick(date) {
+      console.log("Date cliquée:", date);
+    },
+    formatTime(dateTime) {
+      const date = new Date(dateTime);
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
     }
+  },
+  mounted() {
+    this.userId = this.getCookie('UserId');
+    if (this.userId) {
+      this.fetchEvents();
+    } else {
+      console.error("userId non trouvé dans les cookies");
+    }
+  }
 };
 </script>
 
@@ -90,7 +128,6 @@ export default {
   text-align: center;
   padding: 5px;
   background-color: #f5f5f5;
-  /* border-bottom: 1px solid #ddd; */
 }
 
 .custom-event {
@@ -107,16 +144,11 @@ export default {
   display: none;
 }
 
-/* .vuecal__title-bar {
-  background: linear-gradient(to left, #0c2646 0%, #204065 60%, #2a5788 100%);
-} */
+.vuecal__title {
+  color: black;
+}
 
 .vuecal__no-event::before {
   content: '';
-}
-
-.vuecal-day {
-  font-size: 14px;
-  color: #333;
 }
 </style>

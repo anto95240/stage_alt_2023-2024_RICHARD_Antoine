@@ -5,3 +5,4 @@ mysqlclient
 djoser
 pymysql
 djangorestframework_simplejwt
+django-colorfield

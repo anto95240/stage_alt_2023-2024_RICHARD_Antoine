@@ -6,7 +6,6 @@
     <div class="d-flex flex-column w-25 gap-5 mt-5 pb-5">
       <button type="button" class="btn text-white rounded-3" @click="navigateToLogin('student')">Étudiant</button>
       <button type="button" class="btn text-white rounded-3" @click="navigateToLogin('teacher')">Intervenant</button>
-      <button type="button" class="btn text-white rounded-3" @click="navigateToLogin('admin')">Admin</button>
     </div>        
   </div>
 </template>

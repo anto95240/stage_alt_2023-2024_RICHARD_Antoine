@@ -72,3 +72,7 @@ Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
 Une fois que les serveurs backend et frontend sont en cours d'exécution, vous pouvez accéder à l'application en visitant `http://localhost:8080` dans votre navigateur. 
 
 Et pour accéder à l'admin de Django, visitez `http://localhost:8000/admin` dans votre navigateur et connectez-vous avec les informations d'identification du superutilisateur que vous avez crées à l'étape 5 de la partie BackEnd.
+
+
+### Autre informations utiles
+Il y a quelque soucis lors de la déconnexion, pour cela il faut aller dans l'inspecteur de votre navigateur (clic droit -> inspecter), dans l'onglet "Application" et supprimer le cookie "csrftoken" et "sessionid" puis on peut se déconnecter.

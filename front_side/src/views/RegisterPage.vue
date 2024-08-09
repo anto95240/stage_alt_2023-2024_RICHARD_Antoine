@@ -76,6 +76,9 @@ export default {
       },
     };
   },
+  mounted() {
+    document.title = 'Register | EduCool' 
+  },
   methods: {
     navigateToDashboard() {
       this.$router.push({

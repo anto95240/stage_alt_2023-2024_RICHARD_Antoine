@@ -159,6 +159,7 @@
       }
     },
     mounted() {
+      document.title = 'Note | EduCool'
       this.getUserFromCookies();
       this.fetchNotes();
     },

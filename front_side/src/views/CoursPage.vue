@@ -1,14 +1,14 @@
 <template>
   <div class="wrapper">
     <aside :class="{ expand: isSidebarExpanded }" id="sidebar">
-      <div class="d-flex">
-        <button class="toggle-btn" type="button" @click="toggleSidebar">
-          <i class="fa-solid fa-grip"></i>
-        </button>
-        <div class="sidebar-logo">
-          <a href="#"></a>
+        <div class="d-flex">
+          <button class="toggle-btn" type="button" @click="toggleSidebar">
+            <i class="fa-solid fa-grip"></i>
+          </button>
+          <div class="sidebar-logo">
+            <a href="#"></a>
+          </div>
         </div>
-      </div>
         <ul class="sidebar-nav">
             <li class="sidebar-item">
                 <a @click="navigateToHome" class="sidebar-link">
@@ -128,7 +128,7 @@
       };
     },
     mounted() {
-      this.toggleSidebar();
+      document.title = 'Account | EduCool'
       this.getUserFromCookies();
     },
     methods: {

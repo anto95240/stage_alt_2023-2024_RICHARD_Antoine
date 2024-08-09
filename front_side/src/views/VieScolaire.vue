@@ -273,6 +273,7 @@
       };
     },
     mounted() {
+      document.title = 'Vie Scolaire | EduCool'
       this.getUserFromCookies();
       this.fetchPresences();
       this.fetchUserInfo();
@@ -358,7 +359,7 @@
         this.$router.push({ name: 'AccountPage', params: { role: this.role } });
       },
       toggleSidebar() {
-      this.isSidebarExpanded = !this.isSidebarExpanded;
+        this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
         axios.post('/logout/', {}, { withCredentials: true })

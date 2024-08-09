@@ -144,6 +144,7 @@
       };
     },
     mounted() {
+      document.title = 'Document | EduCool'
       this.getUserFromCookies();
       this.fetchDocuments();
     },

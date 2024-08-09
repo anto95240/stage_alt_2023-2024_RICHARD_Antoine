@@ -127,6 +127,7 @@
       };
     },
     mounted() {
+      document.title = 'Notification | EduCool'
       this.getUserFromCookies();
     },
     methods: {

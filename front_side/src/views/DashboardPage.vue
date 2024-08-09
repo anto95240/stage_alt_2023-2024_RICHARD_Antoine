@@ -212,6 +212,7 @@ export default {
     };
   },
   mounted() {
+    document.title = 'Dashboard | EduCool'
     this.getUserFromCookies();
     this.fetchDocuments();
     this.fetchPresences();

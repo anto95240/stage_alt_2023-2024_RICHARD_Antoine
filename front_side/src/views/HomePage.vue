@@ -13,6 +13,9 @@
 <script>
 export default {
   name: 'HomePage',
+  mounted() {
+    document.title = 'Home | EduCool'
+  },
   methods: {
     navigateToLogin(role) {
       this.$router.push({ name: 'LoginPage', params: { role } });

@@ -186,6 +186,7 @@
       };
     },
     mounted() {
+      document.title = 'Account | EduCool'
       this.getUserFromCookies();
       this.fetchUserInfo();
     },

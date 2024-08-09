@@ -45,6 +45,9 @@ export default {
       }
     }
   },
+  mounted(){
+    document.title = 'Login | EduCool'
+  },
   methods: {
     submitForm() {
       this.errors = {

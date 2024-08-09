@@ -8,15 +8,18 @@
   </template>
 
 <script>
-    export default {
-        name: 'LogOut',
-        props: ['role'],
-        methods: {
-            navigateToHome() {
-              this.$router.push({ name: 'HomePage', params: { role: this.role } });
-            }
-        }
+  export default {
+    name: 'LogOut',
+    props: ['role'],
+    mounted() {
+      document.title = 'Logout | EduCool'
+    },
+    methods: {
+      navigateToHome() {
+        this.$router.push({ name: 'HomePage', params: { role: this.role } });
+      }
     }
+  }
 </script>
 
 <style>

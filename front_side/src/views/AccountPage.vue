@@ -73,8 +73,7 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" @click="navigateToAccount">
-                  <!-- <i class="fa-solid fa-circle-user fa-2xl"></i> -->
-                  <img :src="Photo" class="rounded-circle" width="25" height="25" />
+                  <img :src="photo" class="rounded-circle" width="25" height="25" />
                 </a>
               </li>
             </ul>
@@ -94,56 +93,52 @@
                     <div v-if="errors.wrong_credentials" class="mb-3 d-flex flex-column align-items-start text-start">
                       <small class="text-danger">{{ errors.wrong_credentials }}</small>
                     </div>
-                    <!-- <div class="dropdown">
-                      <img class="rounded-circle" :src="profileImageUrl" alt="Circle image" width="100" height="100" />
-                      <input type="file" class="form-control" id="inputGroupFile01" @change="onFileChange">
-                    </div> -->
                     <div class="dropdown">
-                      <img class="rounded-circle" :src="Photo" alt="Circle image" width="120" height="120" />
+                      <img class="rounded-circle" :src="photo" alt="Circle image" width="120" height="120" />
                       <button type="button" @click="triggerFileInput" class="btn px-1 py-1 my-auto" style="width: 2%;">
                         <i class="fa-regular fa-image"></i>
                       </button>
-                      <input type="file" ref="fileInput" class="d-none" name="Photo" @change="onFileChange" />
+                      <input type="file" ref="fileInput" class="d-none" name="photo" @change="onFileChange" />
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
                       <label for="inputFirstName" class="form-label">Prénom</label>
-                      <input type="text" class="form-control" id="inputFirstName" name="FirstName" v-model="FirstName" />
-                      <small v-if="errors.FirstName" class="text-danger">{{ errors.FirstName }}</small>
+                      <input type="text" class="form-control" id="inputFirstName" name="first_name" v-model="first_name" />
+                      <small v-if="errors.first_name" class="text-danger">{{ errors.first_name }}</small>
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
                       <label for="inputLastName" class="form-label">Nom</label>
-                      <input type="text" class="form-control" id="inputLastName" name="LastName" v-model="LastName" />
-                      <small v-if="errors.LastName" class="text-danger">{{ errors.LastName }}</small>
+                      <input type="text" class="form-control" id="inputLastName" name="last_name" v-model="last_name" />
+                      <small v-if="errors.last_name" class="text-danger">{{ errors.last_name }}</small>
                     </div>
                     <div class="col-12 d-flex flex-column align-items-start">
                       <label for="inputAddress" class="form-label">Adresse</label>
-                      <input type="text" class="form-control" id="inputAddress" name="Address" v-model="Address" />
-                      <small v-if="errors.Address" class="text-danger">{{ errors.Address }}</small>
+                      <input type="text" class="form-control" id="inputAddress" name="address" v-model="address" />
+                      <small v-if="errors.address" class="text-danger">{{ errors.address }}</small>
                     </div>
                     <div class="col-12 d-flex flex-column align-items-start">
                       <label for="inputEmail4" class="form-label">Email</label>
-                      <input type="email" class="form-control" id="inputEmail4" name="Email" v-model="Email" />
-                      <small v-if="errors.Email" class="text-danger">{{ errors.Email }}</small>
+                      <input type="email" class="form-control" id="inputEmail4" name="email" v-model="email" />
+                      <small v-if="errors.email" class="text-danger">{{ errors.email }}</small>
                     </div>
                     <div class="col-md-12 d-flex flex-column align-items-start">
                       <label for="inputAge" class="form-label">Date de naissance</label>
-                      <input type="text" class="form-control" id="inputAge" name="Age" v-model="Age" />
-                      <small v-if="errors.Age" class="text-danger">{{ errors.Age }}</small>
+                      <input type="text" class="form-control" id="inputAge" name="age" v-model="age" />
+                      <small v-if="errors.age" class="text-danger">{{ errors.age }}</small>
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
                       <label for="inputSpecialization" class="form-label">Spetialisation</label>
-                      <input type="text" class="form-control" id="inputSpecialization" name="Specialization" v-model="Specialization" :disabled="true">
-                      <small v-if="errors.Specialization" class="text-danger">{{ errors.Specialization }}</small>
+                      <input type="text" class="form-control" id="inputSpecialization" name="specialization" v-model="specialization" :disabled="true">
+                      <small v-if="errors.specialization" class="text-danger">{{ errors.specialization }}</small>
                     </div>
                     <div class="col-md-6 d-flex flex-column align-items-start">
                       <label for="inputClass" class="form-label">Classe</label>
-                      <input type="text" class="form-control" id="inputClass" name="Class" v-model="Class" :disabled="true">
-                      <small v-if="errors.Class" class="text-danger">{{ errors.Class }}</small>
+                      <input type="text" class="form-control" id="inputClass" name="classe" v-model="classe" :disabled="true">
+                      <small v-if="errors.classe" class="text-danger">{{ errors.classe }}</small>
                     </div>
                     <div class="col-12 d-flex flex-column align-items-start">
                       <label for="inputPassword" class="form-label">Nouveau Mot de passe</label>
-                      <input type="password" class="form-control" id="inputPassword" name="Password" v-model="Password" />
-                      <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
+                      <input type="password" class="form-control" id="inputPassword" name="password" v-model="password" />
+                      <small v-if="errors.password" class="text-danger">{{ errors.password }}</small>
                     </div>
                     <div class="col-12">
                       <button type="submit" class="btn btn-primary">Mettre à Jour</button>
@@ -155,6 +150,11 @@
           </div>
         </div>
       </div>
+      <footer class="footer mt-auto py-3 bg-light">
+        <div>
+          <span class="copyright"> © 2024, Designé et codé par Antoine RICHARD. </span>
+        </div>
+      </footer>
     </div>
   </div>
 </template>
@@ -167,21 +167,21 @@
     props: ['role'],
     data() {
       return {
-        FirstName: '',
-        LastName: '',
-        Address: '',
-        Email: '',
-        Age: '',
-        Specialization: '',
-        Class: '',
-        Password: '',
+        first_name: '',
+        last_name: '',
+        address: '',
+        email: '',
+        age: '',
+        specialization: '',
+        classe: '',
+        password: '',
         errors: {},
         isSidebarExpanded: false,
         firstName: '',
         lastName: '',
         userInfo: null,
         userid: Cookies.get('UserId'),
-        Photo: 'https://i.pravatar.cc/150?img=3', // Default profile image
+        photo: 'https://i.pravatar.cc/150?img=3',
         profileImageFile: null,
       };
     },
@@ -193,16 +193,15 @@
       fetchUserInfo() {
         axios.get(`/user-info/${this.userid}/`)
           .then(response => {
-            console.log('User info fetched:', response.data);
             this.userInfo = response.data;
-            this.FirstName = this.userInfo.FirstName;
-            this.LastName = this.userInfo.LastName;
-            this.Address = this.userInfo.Address;
-            this.Email = this.userInfo.Email;
-            this.Photo = this.userInfo.Photo ? `data:image/jpeg;base64,${this.userInfo.Photo}` : this.Photo;
-            this.Age = this.userInfo.Age;
-            this.Specialization = this.userInfo.Specialization;
-            this.Class = this.userInfo.Class;
+            this.first_name = this.userInfo.first_name;
+            this.last_name = this.userInfo.last_name;
+            this.address = this.userInfo.address;
+            this.email = this.userInfo.email;
+            this.photo = this.userInfo.photo ? `data:image/jpeg;base64,${this.userInfo.photo}` : this.photo;
+            this.age = this.userInfo.age;
+            this.specialization = this.userInfo.specialization;
+            this.classe = this.userInfo.classe;
           })
           .catch(error => {
             console.error('Erreur lors de la récupération des informations utilisateur.', error);
@@ -217,7 +216,7 @@
           this.profileImageFile = file;
           const reader = new FileReader();
           reader.onload = (e) => {
-            this.Photo = e.target.result;
+            this.photo = e.target.result;
           };
           reader.readAsDataURL(file);
         } else {
@@ -226,15 +225,14 @@
       },
       submitForm() {
         const formData = new FormData();
-        formData.append('FirstName', this.FirstName);
-        formData.append('LastName', this.LastName);
-        formData.append('Address', this.Address);
-        formData.append('Email', this.Email);
-        formData.append('Age', this.Age);
-        // formData.append('Specialization', this.Specialization);
-        formData.append('Password', this.Password);
+        formData.append('first_name', this.first_name);
+        formData.append('last_name', this.last_name);
+        formData.append('address', this.address);
+        formData.append('email', this.email);
+        formData.append('age', this.age);
+        formData.append('password', this.password);
         if (this.profileImageFile) {
-          formData.append('Photo', this.profileImageFile);
+          formData.append('photo', this.profileImageFile);
         }
 
         axios.put(`/user-update/${this.userid}/`, formData, {
@@ -242,8 +240,7 @@
             'Content-Type': 'multipart/form-data',
           },
         })
-          .then(response => {
-            console.log('Success:', response.data);
+          .then(() => {
             this.fetchUserInfo();
           })
           .catch(error => {

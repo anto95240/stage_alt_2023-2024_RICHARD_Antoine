@@ -2,7 +2,7 @@
   <div class="container bg-lightgreen rounded-4 d-flex p-0 w-50">
     <div class="rounded-4 bg-white bienvenue d-flex flex-column">
       <h3 class="mx-auto">Espace {{ role }}</h3>
-      <button type="button" class="btn text-white w-75 m-auto rounded-3" @click="navigateToRegister">Créer un compte</button>
+      <button type="button" class="btn btnLogin text-white w-75 m-auto rounded-3" @click="navigateToRegister">Créer un compte</button>
     </div>
     <div class="d-flex flex-column w-50 gap-5 mt-5 pb-5">
       <h3>CONNEXION</h3>
@@ -12,16 +12,16 @@
         </div>
         <div class="mb-3 d-flex flex-column align-items-start text-start">
           <label for="exampleFormControlInput1" class="form-label">Email</label>
-          <input type="email" class="form-control" id="exampleFormControlInput1" name="Email" v-model="Email">
-          <small v-if="errors.Email" class="text-danger">{{ errors.Email }}</small>
+          <input type="email" class="form-control" id="exampleFormControlInput1" name="email" v-model="email">
+          <small v-if="errors.email" class="text-danger">{{ errors.email }}</small>
         </div>
         <div class="mb-3 d-flex flex-column align-items-start text-start">
           <label for="inputPassword5" class="form-label">Mot de Passe</label>
-          <input type="password" id="inputPassword5" class="form-control" aria-describedby="PasswordHelpBlock" name="Password" v-model="Password">
-          <small v-if="errors.Password" class="text-danger">{{ errors.Password }}</small>
+          <input type="password" id="inputPassword5" class="form-control" aria-describedby="PasswordHelpBlock" name="password" v-model="password">
+          <small v-if="errors.password" class="text-danger">{{ errors.password }}</small>
         </div>
         <div class="col-12">
-          <button type="submit" class="btn text-white w-100 rounded-3">Se connecter</button>
+          <button type="submit" class="btn btnLogin text-white w-100 rounded-3">Se connecter</button>
         </div>
       </form>
     </div>        
@@ -36,11 +36,11 @@ export default {
   props: ['role'],
   data() {
     return {
-      Email: "",
-      Password: "",
+      email: "",
+      password: "",
       errors: {
-        Email: "",
-        Password: "",
+        email: "",
+        password: "",
         wrong_credentials: "",
       }
     }
@@ -48,23 +48,23 @@ export default {
   methods: {
     submitForm() {
       this.errors = {
-        Email: "",
-        Password: "",
+        email: "",
+        password: "",
         wrong_credentials: ""
       };
 
-      if (!this.Email) {
-        this.errors.Email = "L'Email est requis.";
+      if (!this.email) {
+        this.errors.email = "L'email est requis.";
         return;
       }
-      if (!this.Password) {
-        this.errors.Password = "Le mot de passe est requis.";
+      if (!this.password) {
+        this.errors.password = "Le mot de passe est requis.";
         return;
       }
 
       axios.post(`/login/`, {
-        Email: this.Email,
-        Password: this.Password
+        email: this.email,
+        password: this.password
       }, {
         withCredentials: true
       })
@@ -110,11 +110,11 @@ export default {
   background-color: #61E294;
 }
 
-.btn:hover{
+.btnLogin:hover{
     background-color: #1fa3b5;
 }
 
-.btn{
+.btnLogin{
     background-color: #00B2CA;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
 }

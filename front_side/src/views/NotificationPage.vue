@@ -104,7 +104,7 @@
         </div>
       </div>
       <footer class="footer mt-auto py-3 bg-light">
-        <div class="">
+        <div>
           <span class="copyright"> © 2024, Designé et codé par Antoine RICHARD. </span>
         </div>
       </footer>

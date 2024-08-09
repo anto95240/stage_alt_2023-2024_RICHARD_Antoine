@@ -73,7 +73,7 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" @click="navigateToAccount">
-                  <i class="fa-solid fa-circle-user fa-2xl"></i>
+                  <img :src="photo" class="rounded-circle" width="25" height="25" />
                 </a>
               </li>
             </ul>
@@ -87,22 +87,28 @@
         <div class="row">
           <div class="col-lg col-md-6">
             <div class="card card-chart">
-              <div class="card-header">    
-                <div class="dropdown">
-                </div>
-              </div>
               <div class="card-body">
                 <div class="row">
-                    <div class="col-10">
-                        <h5 class="card-category">Liste des documents</h5>
-                    </div>
-                    <div class="col-10 box-shadow">
-                        <h5 class="card-category">Liste des documents</h5>
-                    </div>
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
+                  <div class="col">
+                    <h5 class="card-category">Liste de mes documents</h5>
+                    <ul>
+                      <div class="d-flex rounded-3 mb-3 align-items-center shadow justify-content-around w-100" v-for="document in documents" :key="document.id">
+                        <div class="row w-100">
+                          <div class="col-3">
+                            <p class="fs-6 pt-3">{{ document.name }}</p>
+                          </div>
+                          <div class="col-6">
+                            <p class="fs-6 pt-3">{{ document.description }}</p>
+                          </div>
+                          <div class="col-2">
+                            <button type="button" class="btn btnDocDownload d-flex align-items-center gap-3" @click="downloadDocument(document.id)"> 
+                              <i class="fa-solid fa-download fa-lg"></i> Télécharger 
+                            </button>              
+                          </div>
+                        </div>
+                      </div>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -110,7 +116,7 @@
         </div>
       </div>
       <footer class="footer mt-auto py-3 bg-light">
-        <div class="">
+        <div>
           <span class="copyright"> © 2024, Designé et codé par Antoine RICHARD. </span>
         </div>
       </footer>
@@ -128,17 +134,33 @@
     data() {
       return {
         isSidebarExpanded: false,
+        documents: [],
         firstName: '',
-        lastName: ''
+        lastName: '',
+        userInfo: null,
+        userid: Cookies.get('UserId'),
+        photo: 'https://i.pravatar.cc/150?img=3', // Default profile image
+        profileImageFile: null,
       };
     },
     mounted() {
       this.getUserFromCookies();
+      this.fetchDocuments();
     },
     methods: {
       getUserFromCookies() {
         this.firstName = Cookies.get('FirstName') || '';
         this.lastName = Cookies.get('LastName') || '';
+      },
+      fetchUserInfo() {
+        axios.get(`/user-info/${this.userid}/`)
+          .then(response => {
+            this.userInfo = response.data;
+            this.photo = this.userInfo.photo ? `data:image/jpeg;base64,${this.userInfo.photo}` : this.photo;
+          })
+          .catch(error => {
+            console.error('Erreur lors de la récupération des informations utilisateur.', error);
+          });
       },
       navigateToNotification() {
         this.$router.push({ name: 'NotificationPage', params: { role: this.role } });
@@ -163,6 +185,25 @@
       },
       toggleSidebar() {
       this.isSidebarExpanded = !this.isSidebarExpanded;
+      },
+      downloadDocument(documentId) {
+        axios.get(`/document/${documentId}/download/`, { responseType: 'blob' })
+          .then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+            window.open(url); // Ouvre le PDF dans une nouvelle fenêtre
+          })
+          .catch(error => {
+            console.error('Error fetching document preview:', error);
+          });
+      },
+      fetchDocuments() {
+        axios.get('/documents/')
+          .then(response => {
+            this.documents = response.data;
+          })
+          .catch(error => {
+            console.error("There was an error fetching the documents!", error);
+          });
       },
       logout() {
         axios.post('/logout/', {}, { withCredentials: true })
@@ -237,6 +278,26 @@ template {
   flex-direction: column;
   background: linear-gradient(180deg, #0d5055 0%, #1C6A47 100%); 
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.btnDocSee {
+    background-color: #00B2CA;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px !important;
+}
+
+.btnDocSee:hover{
+    background-color: #1fa3b5;
+}
+
+.btnDocDownload {
+    background-color: rgb(231, 66, 66);
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px !important;
+}
+
+.btnDocDownload:hover{
+    background-color: rgb(197, 52, 52);
 }
 
 #sidebar.expand {

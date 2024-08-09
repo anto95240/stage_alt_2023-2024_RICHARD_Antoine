@@ -73,7 +73,7 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" @click="navigateToAccount">
-                  <i class="fa-solid fa-circle-user fa-2xl"></i>
+                  <img :src="photo" class="rounded-circle" width="25" height="25" />
                 </a>
               </li>
             </ul>
@@ -85,52 +85,45 @@
       </div>
       <div class="content">
         <div class="row">
-          <div class="col-lg-6 col-md-6">
+          <div class="col-lg-6 col-md-6 mx-auto">
             <div class="card card-chart">
-              <div class="card-header">
-                <div class="dropdown">
-                </div>
-              </div>
               <div class="card-body">
-                <div class="chart-area">
+                <div class="chart-area" v-for="subject in uniqueSubjects" :key="subject">
+                  <div class="d-flex justify-content-between p-3">
+                    <h5>{{ subject }}</h5>
+                    <h5>{{ getAverageForSubject(subject) }}</h5>
+                  </div>
+                  <div class="d-flex justify-content-end pe-5 note" v-for="note in getNotesForSubject(subject)" :key="note.id" @click="showNoteDetails(note)">
+                    <p>{{ note.note }} / {{  note.total_score }}</p>
+                  </div>
                 </div>
               </div>
               <div class="card-footer">
                 <div class="stats">
-                    <div class="d-flex justify-content-between">
-                        <h5>Moyenne Etudiant</h5>
-                        <h5>
-                            15,20
-                        </h5>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <p>Moyenne Promo</p>
-                        <p>14,20</p>
-                    </div>
+                  <div class="d-flex justify-content-between">
+                    <h5>Moyenne Etudiant</h5>
+                    <h5>{{ overallAverage.toFixed(2) }}</h5>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6">
-            <div class="card card-chart">
-              <div class="card-header">
-                <div class="dropdown">
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
-                </div>
-              </div>
+          <div v-if="selectedNote" class="modal" @click.self="selectedNote = null">
+            <div class="modal-content">
+              <span class="close" @click="selectedNote = null">&times;</span>
+              <h2>Détails de la Note</h2>
+              <p>Matière: {{ selectedNote.subject }}</p>
+              <p>Note: {{ selectedNote.note }}</p>
+              <p>Noté sur: {{ selectedNote.total_score }}</p>
+              <p>Coefficient: {{ selectedNote.coefficient }}</p>
+              <p>Enseignant: {{ selectedNote.teacher }}</p>
+              <p>Étiquette: {{ selectedNote.label }}</p>
             </div>
           </div>
         </div>
       </div>
       <footer class="footer mt-auto py-3 bg-light">
-        <div class="">
+        <div>
           <span class="copyright"> © 2024, Designé et codé par Antoine RICHARD. </span>
         </div>
       </footer>
@@ -149,16 +142,68 @@
       return {
         isSidebarExpanded: false,
         firstName: '',
-        lastName: ''
+        lastName: '',
+        notes: [],
+        averagePerSubject: [],
+        overallAverage: 0,
+        selectedNote: null,
+        userInfo: null,
+        userid: Cookies.get('UserId'),
+        photo: 'https://i.pravatar.cc/150?img=3', // Default profile image
+        profileImageFile: null,
       };
+    },
+    computed: {
+      uniqueSubjects() {
+        return [...new Set(this.notes.map(note => note.subject))];
+      }
     },
     mounted() {
       this.getUserFromCookies();
+      this.fetchNotes();
     },
     methods: {
       getUserFromCookies() {
         this.firstName = Cookies.get('FirstName') || '';
         this.lastName = Cookies.get('LastName') || '';
+      },
+      fetchNotes() {
+        const studentId = Cookies.get('UserId'); 
+        axios.get('/notes/', { params: { student_id: studentId } }, { withCredentials: true })
+          .then(response => {
+            const { notes, average_per_subject, overall_average } = response.data;
+            this.notes = notes; 
+            this.averagePerSubject = average_per_subject.map(item => ({
+              subject: item.subject,
+              average: parseFloat(item.average)
+            }));
+            this.overallAverage = Number(overall_average) || 0;
+          })
+          .catch(error => {
+            console.error('Une erreur est survenue lors de la récupération des notes.', error);
+          });
+      },
+      fetchUserInfo() {
+        axios.get(`/user-info/${this.userid}/`)
+          .then(response => {
+            this.userInfo = response.data;
+            this.photo = this.userInfo.photo ? `data:image/jpeg;base64,${this.userInfo.photo}` : this.photo;
+          })
+          .catch(error => {
+            console.error('Erreur lors de la récupération des informations utilisateur.', error);
+          });
+      },
+      showNoteDetails(note) {
+        this.selectedNote = note;
+      },
+      getAverageForSubject(subject) {
+        // Trouver la moyenne pour la matière
+        const avg = this.averagePerSubject.find(item => item.subject === subject)?.average;
+        // Vérifier si avg est un nombre avant d'appeler toFixed
+        return typeof avg === 'number' ? avg.toFixed(2) : 'N/A';
+      },
+      getNotesForSubject(subject) {
+        return this.notes.filter(note => note.subject === subject);
       },
       navigateToNotification() {
         this.$router.push({ name: 'NotificationPage', params: { role: this.role } });
@@ -384,5 +429,44 @@ a.sidebar-link {
   text-decoration: underline !important;
   color: rgb(255, 255, 255) !important;
   cursor: pointer;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.note{
+  cursor:pointer
 }
 </style>

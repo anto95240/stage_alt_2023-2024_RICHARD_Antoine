@@ -73,7 +73,7 @@
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link" @click="navigateToAccount">
-                  <i class="fa-solid fa-circle-user fa-2xl"></i>
+                  <img :src="photo" class="rounded-circle" width="25" height="25" />
                 </a>
               </li>
             </ul>
@@ -97,15 +97,15 @@
                       <p class="card-title">Mes dernières notes</p>
                       <p class="card-title">></p> 
                   </a> 
-                <div class="dropdown">
-                </div>
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
+                  <li v-for="note in notes" :key="note.id">
+                    <div class="d-flex gap-5 p-2 m-2 border rounded-3 justify-content-between">
+                      <strong>{{ note.subject }}</strong>
+                      <p class="mb-0">{{ note.note }} / {{  note.total_score }}</p>
+                    </div>
+                  </li>
                 </div>
               </div>
             </div>
@@ -117,15 +117,18 @@
                       <p class="card-title">Mes dernières absences</p>
                       <p class="card-title">></p> 
                   </a>
-                <div class="dropdown">
-                </div>
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
+                  <li v-for="absence in absences" :key="absence.id">
+                    <div class="d-flex gap-5 p-2 m-2 border rounded-3 justify-content-between">
+                      <div class="d-flex flex-column">
+                        <strong>{{ absence.date }}</strong>
+                        <p class="mb-0"> de {{ absence.absence_start_time}} à {{ absence.absence_end_time }}</p>
+                      </div>
+                      <p>{{ calculateDuration(absence.absence_start_time, absence.absence_end_time) }}</p>
+                    </div>
+                  </li>
                 </div>
               </div>
             </div>
@@ -137,15 +140,15 @@
                       <p class="card-title">Mes derniers retards</p>
                       <p class="card-title">></p> 
                   </a>
-                <div class="dropdown">
-                </div>
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
+                  <li v-for="retard in retards" :key="retard.id">
+                    <div class="d-flex gap-5 p-2 m-2 border rounded-3 justify-content-between">
+                      <strong>{{ retard.late_duration }} minutes</strong>
+                      <p class="mb-0">{{ retard.date }}</p>
+                    </div>
+                  </li>
                 </div>
               </div>
             </div>
@@ -160,10 +163,12 @@
               </div>
               <div class="card-body">
                 <div class="chart-area">
-                </div>
-              </div>
-              <div class="card-footer">
-                <div class="stats">
+                  <li v-for="document in documents" :key="document.id">
+                    <div class="d-flex gap-5 p-2 m-2 border rounded-3 justify-content-between">
+                      <strong>{{ document.name }}</strong>
+                      <a :href="document.file_path">Télécharger</a>
+                    </div>
+                  </li>
                 </div>
               </div>
             </div>
@@ -171,7 +176,7 @@
         </div>
       </div>
       <footer class="footer mt-auto py-3 bg-light">
-        <div class="">
+        <div>
           <span class="copyright"> © 2024, Designé et codé par Antoine RICHARD. </span>
         </div>
       </footer>
@@ -194,17 +199,38 @@ export default {
   data() {
     return {
       isSidebarExpanded: false,
+      documents: [],
+      absences: [],
+      retards: [],
+      notes: [],
       firstName: '',
       lastName: '',
+      userInfo: null,
+      userid: Cookies.get('UserId'),
+      photo: 'https://i.pravatar.cc/150?img=3',
+      profileImageFile: null,
     };
   },
   mounted() {
     this.getUserFromCookies();
+    this.fetchDocuments();
+    this.fetchPresences();
+    this.fetchNotes();
   },
   methods: {
     getUserFromCookies() {
       this.firstName = Cookies.get('FirstName') || '';
       this.lastName = Cookies.get('LastName') || '';
+    },
+    fetchUserInfo() {
+      axios.get(`/user-info/${this.userid}/`)
+        .then(response => {
+          this.userInfo = response.data;
+          this.photo = this.userInfo.photo ? `data:image/jpeg;base64,${this.userInfo.photo}` : this.photo;
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des informations utilisateur.', error);
+        });
     },
     navigateToNote() {
       this.$router.push({ name: 'NotePage', params: { role: this.role } });
@@ -229,6 +255,62 @@ export default {
     },
     toggleSidebar() {
     this.isSidebarExpanded = !this.isSidebarExpanded;
+    },
+    formatDate(date) {
+      // Formatte la date au format souhaité (par exemple, 'DD-MM-YYYY')
+      return new Date(date).toLocaleDateString();
+    },
+    calculateDuration(startTime, endTime) {
+      // On convertit les heures pour être un objets Date
+      const [startHours, startMinutes] = startTime.split(':').map(Number);
+      const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+      const startDate = new Date();
+      startDate.setHours(startHours, startMinutes, 0, 0);
+
+      const endDate = new Date();
+      endDate.setHours(endHours, endMinutes, 0, 0);
+
+      // On calcul la différence en minutes
+      const diffMs = endDate - startDate;
+      const diffMins = Math.floor(diffMs / 60000); // 60000 ms dans une minute
+
+      // Puis on convertit en heures et minutes
+      const hours = Math.floor(diffMins / 60);
+      const minutes = diffMins % 60;
+
+      return `${hours}h ${minutes}m`;
+    },
+    fetchPresences() {
+      const studentId = Cookies.get('StudentId');
+
+      axios.get('/presences/', { params: { student_id: studentId } })
+        .then(response => {
+          this.absences = response.data.filter(p => p.is_abscent).slice(-5);
+          this.retards = response.data.filter(p => p.is_late).slice(-5);
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des présences:', error);
+        });
+    },
+    fetchDocuments() {
+      axios.get('/documents/')
+        .then(response => {
+          this.documents = response.data.slice(-5);
+        })
+        .catch(error => {
+          console.error("There was an error fetching the documents!", error);
+        });
+    },
+    fetchNotes() {
+      const studentId = Cookies.get('UserId');
+      axios.get('/notes/', { params: { student_id: studentId } }, { withCredentials: true })
+        .then(response => {
+          this.notes = response.data.notes.slice(-5);
+        })
+        .catch(error => {
+          console.error("There was an error fetching the notes!", error);
+        });
     },
     logout() {
       axios.post('/logout/', {}, { withCredentials: true })
@@ -303,6 +385,8 @@ template {
   flex-direction: column;
   background: linear-gradient(180deg, #0d5055 0%, #1C6A47 100%); 
   box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+  height: 100%;
+  position: fixed;
 }
 
 #sidebar.expand {
@@ -419,6 +503,7 @@ a.sidebar-link {
   min-height: 0 !important;
   margin-top: -70px !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 4.5%;
 }
 .card-header a:hover, .card-header a:focus{
   text-decoration: underline !important;
@@ -430,5 +515,17 @@ a.sidebar-link {
   text-decoration: underline !important;
   color: rgb(255, 255, 255) !important;
   cursor: pointer;
+}
+
+.navbar>.container, .navbar>.container-fluid, .navbar>.container-lg, .navbar>.container-md, .navbar>.container-sm, .navbar>.container-xl, .navbar>.container-xxl {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 5%;
+}
+
+.panel-header {
+    margin-left: 4.5%;
 }
 </style>

@@ -6,6 +6,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .models import *
 from .serializers import UserSerializer
+from planning.models import *
+from planning.serializers import *
 from django.http import JsonResponse
 
 # Vue pour l'inscription
@@ -13,12 +15,12 @@ from django.http import JsonResponse
 @permission_classes([AllowAny])
 def role_register(request, role):
     data = request.data
-    first_name = data.get('FirstName')
-    last_name = data.get('LastName')
-    address = data.get('Address')
-    email = data.get('Email')
-    password1 = data.get('Password1')
-    password2 = data.get('Password2')
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    address = data.get('address')
+    email = data.get('email')
+    password1 = data.get('password1')
+    password2 = data.get('password2')
 
     # Vérifier si tous les champs sont présents
     if not all([first_name, last_name, address, email, password1, password2]):
@@ -27,17 +29,17 @@ def role_register(request, role):
     if password1 != password2:
         return Response({'success': False, 'message': 'Les mots de passe ne correspondent pas'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if User.objects.filter(Email=email).exists():
+    if User.objects.filter(email=email).exists():
         return Response({'success': False, 'message': 'Un utilisateur avec cet email existe déjà'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         user = User.objects.create(
-            Email=email,
-            Password=make_password(password1),  # Hacher le mot de passe
-            Role=role,
-            Address=address,
-            FirstName=first_name,
-            LastName=last_name
+            email=email,
+            password=password1,
+            role=role,
+            address=address,
+            first_name=first_name,
+            last_name=last_name
         )
         
         response = Response({
@@ -45,8 +47,8 @@ def role_register(request, role):
             'user': UserSerializer(user).data,
         }, status=status.HTTP_200_OK)
 
-        response.set_cookie('FirstName', user.FirstName, secure=True, samesite='Strict')
-        response.set_cookie('LastName', user.LastName, secure=True, samesite='Strict')
+        response.set_cookie('FirstName', user.first_name, secure=True, samesite='Strict')
+        response.set_cookie('LastName', user.last_name, secure=True, samesite='Strict')
         response.set_cookie('UserId', user.id, secure=True, samesite='Strict')
         
         return response
@@ -57,22 +59,22 @@ def role_register(request, role):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def role_login(request):
-    email = request.data.get('Email')
-    password = request.data.get('Password')
+    email = request.data.get('email')
+    password = request.data.get('password')
 
     if not all([email, password]):
         return Response({'success': False, 'message': 'L\'email et le mot de passe sont requis'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        user = User.objects.get(Email=email)
-        if check_password(password, user.Password):
+        user = User.objects.get(email=email)
+        if check_password(password, user.password):
             response = Response({
                 'success': True,
                 'user': UserSerializer(user).data,
             }, status=status.HTTP_200_OK)
 
-            response.set_cookie('FirstName', user.FirstName, secure=True, samesite='Strict')
-            response.set_cookie('LastName', user.LastName, secure=True, samesite='Strict')
+            response.set_cookie('FirstName', user.first_name, secure=True, samesite='Strict')
+            response.set_cookie('LastName', user.last_name, secure=True, samesite='Strict')
             response.set_cookie('UserId', user.id, secure=True, samesite='Strict')
             
             return response
@@ -98,17 +100,17 @@ def user_info(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
         user_info = {
-            "FirstName": user.FirstName,
-            "LastName": user.LastName,
-            "Address": user.Address,
-            "Email": user.Email,
-            "Age": user.Age,
-            "Photo": None,
-            "Specialization": user.Specialization.Specialization if user.Specialization else None,
-            "Class": user.Class.Class if user.Class else None,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "address": user.address,
+            "email": user.email,
+            "age": user.age,
+            "photo": None,
+            "specialization": user.specialization.specialization if user.specialization else None,
+            "classe": user.classe.classe if user.classe else None,
         }
-        if user.Photo:
-            with open(user.Photo.path, "rb") as image_file:
+        if user.photo:
+            with open(user.photo.path, "rb") as image_file:
                 photo_base64 = base64.b64encode(image_file.read()).decode('utf-8')
                 user_info['Photo'] = photo_base64
         else:
@@ -125,20 +127,20 @@ def user_update(request, user_id):
         user = User.objects.get(id=user_id)
         data = request.data
         
-        if 'Password' in data and data['Password']:
-            user.Password = make_password(data['Password'])
-        if 'FirstName' in data:
-            user.FirstName = data['FirstName']
-        if 'LastName' in data:
-            user.LastName = data['LastName']
-        if 'Address' in data:
-            user.Address = data['Address']
-        if 'Email' in data:
-            user.Email = data['Email']
-        if 'Age' in data:
-            user.Age = data['Age']
-        if 'Photo' in request.FILES:
-            user.Photo = request.FILES['Photo']
+        if 'password' in data and data['password']:
+            user.password = make_password(data['password'])
+        if 'first_name' in data:
+            user.first_name = data['first_name']
+        if 'last_name' in data:
+            user.last_name = data['last_name']
+        if 'address' in data:
+            user.address = data['address']
+        if 'email' in data:
+            user.email = data['email']
+        if 'age' in data:
+            user.age = data['age']
+        if 'photo' in request.FILES:
+            user.photo = request.FILES['photo']
         
         user.save()
         return Response({'message': 'Informations mises à jour avec succès'}, status=status.HTTP_200_OK)
@@ -146,7 +148,4 @@ def user_update(request, user_id):
     except User.DoesNotExist:
         return Response({'error': 'Utilisateur non trouvé.'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        # Ajout de logs pour capturer les informations de l'exception
-        import traceback
-        print(traceback.format_exc())
         return Response({'error': 'Une erreur est survenue lors de la mise à jour.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

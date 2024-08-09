@@ -11,8 +11,6 @@ import DocumentPage from '../views/DocumentPage.vue';
 import VieScolaire from '../views/VieScolaire.vue';
 import NotificationPage from '../views/NotificationPage.vue'
 
-// import store from '../store';
-
 const routes = [
   {
     path: '/',

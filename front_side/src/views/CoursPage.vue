@@ -73,7 +73,7 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" @click="navigateToAccount">
-                  <i class="fa-solid fa-circle-user fa-2xl"></i>
+                  <img :src="photo" class="rounded-circle" width="25" height="25" />
                 </a>
               </li>
             </ul>
@@ -97,7 +97,7 @@
         </div>
       </div>
       <footer class="footer mt-auto py-3 bg-light">
-        <div class="">
+        <div>
           <span class="copyright"> © 2024, Designé et codé par Antoine RICHARD. </span>
         </div>
       </footer>
@@ -120,7 +120,11 @@
       return {
         isSidebarExpanded: false,
         firstName: '',
-        lastName: ''
+        lastName: '',
+        userInfo: null,
+        userid: Cookies.get('UserId'),
+        photo: 'https://i.pravatar.cc/150?img=3',
+        profileImageFile: null
       };
     },
     mounted() {
@@ -130,6 +134,16 @@
       getUserFromCookies() {
         this.firstName = Cookies.get('FirstName') || '';
         this.lastName = Cookies.get('LastName') || '';
+      },
+      fetchUserInfo() {
+        axios.get(`/user-info/${this.userid}/`)
+          .then(response => {
+            this.userInfo = response.data;
+            this.photo = this.userInfo.photo ? `data:image/jpeg;base64,${this.userInfo.photo}` : this.photo;
+          })
+          .catch(error => {
+            console.error('Erreur lors de la récupération des informations utilisateur.', error);
+          });
       },
       navigateToNotification() {
         this.$router.push({ name: 'NotificationPage', params: { role: this.role } });

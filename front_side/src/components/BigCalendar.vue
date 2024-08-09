@@ -8,7 +8,7 @@
       active-view="week" 
       :disable-views="['years', 'year', 'month', 'day']"
       :time-from="8 * 60"
-      :time-to="18 * 60"
+      :time-to="19 * 60"
     >
       <template v-slot:event="{ event }">
         <div
@@ -59,17 +59,14 @@ export default {
         }
       })
       .then(response => {
-        console.log("Données reçues:", response.data);
-
         this.events = response.data.map(course => ({
-          start: `${course.Date} ${course.StartTime}`,
-          end: `${course.Date} ${course.EndTime}`,
-          title: `${course.Subject} - <br> ${course.Teacher.LastName} ${course.Teacher.FirstName}`,
-          content: `Salle: ${course.Place}`,
-          backgroundColor: `${course.Color}` // Assurez-vous que la propriété est correcte
+          start: `${course.date} ${course.start_time}`,
+          end: `${course.date} ${course.end_time}`,
+          title: `${course.subject} - <br> ${course.teacher.last_name} ${course.teacher.first_name}`,
+          content: `Salle: ${course.place}`,
+          backgroundColor: `${course.color}`
         }));
 
-        console.log("Événements transformés:", this.events);
       })
       .catch(error => {
         console.error("Erreur lors de la récupération des événements:", error.response || error);
@@ -80,9 +77,6 @@ export default {
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
       return null;
-    },
-    onDateClick(date) {
-      console.log("Date cliquée:", date);
     },
     formatTime(dateTime) {
       const date = new Date(dateTime);
@@ -105,14 +99,14 @@ export default {
 <style>
 .vuecal__event {
   position: absolute;
-  top: 0; /* Positionnement vertical pour ajuster les événements */
-  left: 0; /* Positionnement horizontal pour ajuster les événements */
+  top: 0;
+  left: 0;
   width: 100%;
   padding: 10px;
   border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure pour plus de visibilité */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Ombre optionnelle */
-  box-sizing: border-box; /* Pour que le padding n'affecte pas la largeur totale */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: 100%;

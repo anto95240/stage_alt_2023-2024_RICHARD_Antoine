@@ -9,7 +9,7 @@
       active-view="week" 
       :disable-views="['years', 'year', 'month', 'day']"
       :time-from="8 * 60"
-      :time-to="18 * 60"
+      :time-to="19 * 60"
     >
       <template v-slot:event="{ event }">
         <div
@@ -43,10 +43,9 @@ export default {
       locale: 'fr',
       userId: null,
       calendarStyle: {
-        // 'border-radius': '8px',
         'padding': '10px',
         'width': '100%',
-        'height': '200px' // Ajustez la hauteur en fonction de vos besoins
+        'height': '200px'
       }
     };
   },
@@ -66,17 +65,14 @@ export default {
         }
       })
       .then(response => {
-        console.log("Données reçues:", response.data);
-
         this.events = response.data.map(course => ({
-          start: `${course.Date} ${course.StartTime}`,
-          end: `${course.Date} ${course.EndTime}`,
-          title: `${course.Subject} - <br> ${course.Teacher.LastName} ${course.Teacher.FirstName}`,
-          content: `Salle: ${course.Place}`,
-          backgroundColor: `${course.Color}` // Assurez-vous que la propriété est correcte
+          start: `${course.date} ${course.start_time}`,
+          end: `${course.date} ${course.end_time}`,
+          title: `${course.subject} - <br> ${course.teacher.last_name} ${course.teacher.first_name}`,
+          content: `Salle: ${course.place}`,
+          backgroundColor: `${course.color}`
         }));
 
-        console.log("Événements transformés:", this.events);
       })
       .catch(error => {
         console.error("Erreur lors de la récupération des événements:", error.response || error);
@@ -87,9 +83,6 @@ export default {
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
       return null;
-    },
-    onDateClick(date) {
-      console.log("Date cliquée:", date);
     },
     formatTime(dateTime) {
       const date = new Date(dateTime);

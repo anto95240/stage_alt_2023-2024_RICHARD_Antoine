@@ -2,7 +2,7 @@
     <div class="container bg-lightgreen rounded-4 d-flex p-0 w-50 justify-content-center">
       <div class="d-flex flex-column w-50 gap-5 mt-5 pb-5">
         <h3>Vous avez été déconnecter</h3>
-        <button class="btn rounded-3" @click="navigateToHome">Se connecter</button>
+        <button class="btn btnDeco rounded-3" @click="navigateToHome">Se connecter</button>
       </div>        
     </div>
   </template>
@@ -28,11 +28,11 @@
   background-color: #61E294;
 }
 
-.btn:hover{
+.btnDeco:hover{
     background-color: #1fa3b5;
 }
 
-.btn{
+.btnDeco{
     background-color: #00B2CA;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
 }

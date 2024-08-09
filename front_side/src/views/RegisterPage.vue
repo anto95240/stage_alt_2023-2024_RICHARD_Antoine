@@ -2,7 +2,7 @@
   <div class="container bg-lightgreen rounded-4 d-flex p-0 w-50 mx-auto">
     <div class="rounded-4 bg-white bienvenue d-flex flex-column">
       <h3 class="mx-auto">Espace {{ role }}</h3>
-      <button type="button" class="btn text-white w-75 m-auto rounded-3" @click="navigateToLogin">Se connecter</button>
+      <button type="button" class="btn btnRegister text-white w-75 m-auto rounded-3" @click="navigateToLogin">Se connecter</button>
     </div>
     <div class="d-flex flex-column w-50 gap-5 mt-5 pb-5">
       <h3>INSCRIPTION</h3>
@@ -12,39 +12,39 @@
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="inputFirstName" class="form-label">Prénom</label>
-          <input type="text" class="form-control" id="inputFirstName" name="FirstName" v-model="FirstName" />
-          <small v-if="errors.FirstName" class="text-danger">{{ errors.FirstName }}</small>
+          <input type="text" class="form-control" id="inputFirstName" name="first_name" v-model="first_name" />
+          <small v-if="errors.first_name" class="text-danger">{{ errors.first_name }}</small>
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="inputLastName" class="form-label">Nom</label>
-          <input type="text" class="form-control" id="inputLastName" name="LastName" v-model="LastName" />
-          <small v-if="errors.LastName" class="text-danger">{{ errors.LastName }}</small>
+          <input type="text" class="form-control" id="inputLastName" name="last_name" v-model="last_name" />
+          <small v-if="errors.last_name" class="text-danger">{{ errors.last_name }}</small>
         </div>
         <div class="col-12 d-flex flex-column align-items-start">
           <label for="inputAddress" class="form-label">Adresse</label>
-          <input type="text" class="form-control" id="inputAddress" name="Address" v-model="Address" />
-          <small v-if="errors.Address" class="text-danger">{{ errors.Address }}</small>
+          <input type="text" class="form-control" id="inputAddress" name="address" v-model="address" />
+          <small v-if="errors.address" class="text-danger">{{ errors.address }}</small>
         </div>
         <div class="col-12 d-flex flex-column align-items-start">
           <label for="inputEmail4" class="form-label">Email</label>
-          <input type="email" class="form-control" id="inputEmail4" name="Email" v-model="Email" />
-          <small v-if="errors.Email" class="text-danger">{{ errors.Email }}</small>
+          <input type="email" class="form-control" id="inputEmail4" name="email" v-model="email" />
+          <small v-if="errors.email" class="text-danger">{{ errors.email }}</small>
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="inputPassword1" class="form-label">Mot de Passe</label>
-          <input type="password" class="form-control" id="inputPassword1" name="Password1" v-model="Password1" />
-          <small v-if="errors.Password1" class="text-danger">{{ errors.Password1 }}</small>
+          <input type="password" class="form-control" id="inputPassword1" name="password1" v-model="password1" />
+          <small v-if="errors.password1" class="text-danger">{{ errors.password1 }}</small>
         </div>
         <div class="col-md-6 d-flex flex-column align-items-start">
           <label for="inputPassword2" class="form-label">Confirmer Mot de Passe</label>
-          <input type="password" class="form-control" id="inputPassword2" name="Password2" v-model="Password2">
-          <small v-if="errors.Password2" class="text-danger">{{ errors.Password2 }}</small>
+          <input type="password" class="form-control" id="inputPassword2" name="password2" v-model="password2">
+          <small v-if="errors.password2" class="text-danger">{{ errors.password2 }}</small>
         </div>
         <div class="notification is-danger" v-if="Object.keys(errors).length">
           <p v-for="(error, index) in Object.values(errors)" :key="index">{{ error }}</p>
         </div>
         <div class="col-12">
-          <button type="submit" class="btn text-white w-100 rounded-3">Créer un compte</button>
+          <button type="submit" class="btn btnRegister text-white w-100 rounded-3">Créer un compte</button>
         </div>
       </form>
     </div>
@@ -53,26 +53,25 @@
 
 <script>
 import axios from 'axios';
-// import Cookies from 'js-cookie';
 
 export default {
   name: 'RegisterPage',
   props: ['role'],
   data() {
     return {
-      FirstName: '',
-      LastName: '',
-      Address: '',
-      Email: '',
-      Password1: '',
-      Password2: '',
+      first_name: '',
+      last_name: '',
+      address: '',
+      email: '',
+      password1: '',
+      password2: '',
       errors: {
-        FirstName: '',
-        LastName: '',
-        Address: '',
-        Email: '',
-        Password1: '',
-        Password2: '',
+        first_name: '',
+        last_name: '',
+        address: '',
+        email: '',
+        password1: '',
+        password2: '',
         wrong_credentials: '',
       },
     };
@@ -93,42 +92,39 @@ export default {
 
       this.errors = {};
 
-      // Validation des champs
-      if (!this.FirstName) {
-        this.errors.FirstName = "Le prénom est requis.";
+      if (!this.first_name) {
+        this.errors.first_name = "Le prénom est requis.";
       }
-      if (!this.LastName) {
-        this.errors.LastName = "Le nom est requis.";
+      if (!this.last_name) {
+        this.errors.last_name = "Le nom est requis.";
       }
-      if (!this.Address) {
-        this.errors.Address = "L'adresse est requise.";
+      if (!this.address) {
+        this.errors.address = "L'adresse est requise.";
       }
-      if (!this.Email) {
-        this.errors.Email = "L'email est requis.";
+      if (!this.email) {
+        this.errors.email = "L'email est requis.";
       }
-      if (!this.Password1) {
-        this.errors.Password1 = "Le mot de passe est requis.";
+      if (!this.password1) {
+        this.errors.password1 = "Le mot de passe est requis.";
       }
-      if (!this.Password2) {
-        this.errors.Password2 = "La confirmation du mot de passe est requise.";
+      if (!this.password2) {
+        this.errors.password2 = "La confirmation du mot de passe est requise.";
       }
-      if (this.Password1 !== this.Password2) {
-        this.errors.Password2 = "Les mots de passe ne correspondent pas.";
+      if (this.password1 !== this.password2) {
+        this.errors.password2 = "Les mots de passe ne correspondent pas.";
       }
 
-      // Arrêter si des erreurs sont présentes
       if (Object.keys(this.errors).length > 0) {
         return;
       }
 
-      // Préparer les données pour l'envoi à l'API
       const formData = {
-        FirstName: this.FirstName,
-        LastName: this.LastName,
-        Address: this.Address,
-        Email: this.Email,
-        Password1: this.Password1,
-        Password2: this.Password2
+        first_name: this.first_name,
+        last_name: this.last_name,
+        address: this.address,
+        email: this.email,
+        password1: this.password1,
+        password2: this.password2
       };
 
 
@@ -141,7 +137,7 @@ export default {
 
             this.navigateToDashboard();
           } else {
-            this.errors.wrong_credentials = "Email ou mot de passe incorrect.";
+            this.errors.wrong_credentials = "email ou mot de passe incorrect.";
           }
         })
         .catch(error => {
@@ -166,11 +162,11 @@ export default {
   background-color: #61E294;
 }
 
-.btn:hover{
+.btnRegister:hover{
     background-color: #1fa3b5;
 }
 
-.btn{
+.btnRegister {
     background-color: #00B2CA;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
 }

@@ -32,7 +32,9 @@ INSTALLED_APPS = [
     'djoser',
     'user',
     'planning',
-    'document',
+    'presence',
+    'doc',
+    'note',
     'colorfield',
 ]
 
@@ -85,7 +87,7 @@ WSGI_APPLICATION = 'back_side.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'platform_educ',
+        'NAME': 'education_platform',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost', 
@@ -131,7 +133,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = './media/'
 
 
 # Default primary key field type

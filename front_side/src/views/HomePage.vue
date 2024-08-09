@@ -4,8 +4,8 @@
       <h3>Bienvenue</h3>
     </div>
     <div class="d-flex flex-column w-25 gap-5 mt-5 pb-5">
-      <button type="button" class="btn text-white rounded-3" @click="navigateToLogin('student')">Étudiant</button>
-      <button type="button" class="btn text-white rounded-3" @click="navigateToLogin('teacher')">Intervenant</button>
+      <button type="button" class="btn btnHome text-white rounded-3" @click="navigateToLogin('student')">Étudiant</button>
+      <button type="button" class="btn btnHome text-white rounded-3" @click="navigateToLogin('teacher')">Intervenant</button>
     </div>        
   </div>
 </template>
@@ -30,11 +30,11 @@ export default {
   background-color: #61E294;
 }
 
-.btn:hover{
+.btnHome:hover{
     background-color: #1fa3b5;
 }
 
-.btn{
+.btnHome{
     background-color: #00B2CA;
     box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
 }

@@ -91,7 +91,7 @@
           <li class="nav-item px-5" role="presentation">
             <a class="nav-link px-5" :class="{ active: activeTab === 'retards' }" @click="setActiveTab('retards')" id="retards-tab" data-bs-toggle="tab" role="tab">Mes retards</a>
           </li>
-          <li class="nav-item px-5" role="presentation"> <!--v-if="role === 'teacher'" >-->
+          <li class="nav-item px-5" role="presentation" v-if="role === 'teacher'" >
             <a class="nav-link px-5" :class="{ active: activeTab === 'all' }" @click="setActiveTab('all')" id="all-tab" data-bs-toggle="tab" role="tab">Absences/retards des élèves</a>
           </li>
         </ul>

@@ -7,7 +7,7 @@ Ce projet est une plateforme pédagogique développée avec Django et VueJs. Il 
 Avant de commencer, assurez-vous d'avoir installé les éléments suivants :
 - [Python 3.11](https://www.python.org/downloads/)
 - [Node.js](https://nodejs.org/fr/)
-- [WampServer - (si vous êtes sur windows)](https://www.wampserver.com/en/) ou [Mamp - si vous êtes sur mac](https://www.mamp.info/en/downloads/)
+- [WampServer (si vous êtes sur windows)](https://www.wampserver.com/en/) ou [Mamp (si vous êtes sur mac)](https://www.mamp.info/en/downloads/)
 
 ## Installation
 

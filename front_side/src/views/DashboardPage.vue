@@ -232,6 +232,45 @@ export default {
           console.error('Erreur lors de la récupération des informations utilisateur.', error);
         });
     },
+    fetchPresences() {
+      const studentId = Cookies.get('StudentId');
+
+      axios.get('/presences/', { params: { student_id: studentId } })
+        .then(response => {
+          this.absences = response.data.filter(p => p.is_abscent)
+          this.absences.sort((a, b) => new Date(b.date) - new Date(a.date));
+          this.absences = this.absences.slice(0, 5);
+
+          this.retards = response.data.filter(p => p.is_late)
+          this.retards.sort((a, b) => new Date(b.date) - new Date(a.date));
+          this.retards = this.retards.slice(0, 5);
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des présences:', error);
+        });
+    },
+    fetchDocuments() {
+      axios.get('/documents/')
+        .then(response => {
+          this.documents = response.data;
+          this.documents = this.documents.slice(0, 5);
+        })
+        .catch(error => {
+          console.error("There was an error fetching the documents!", error);
+        });
+    },
+    fetchNotes() {
+      const studentId = Cookies.get('UserId');
+      axios.get('/notes/', { params: { student_id: studentId } }, { withCredentials: true })
+        .then(response => {
+          this.notes = response.data.notes;
+          this.notes.sort((a, b) => new Date(b.date) - new Date(a.date));
+          this.notes = this.notes.slice(0, 5);
+        })
+        .catch(error => {
+          console.error("There was an error fetching the notes!", error);
+        });
+    },
     navigateToNote() {
       this.$router.push({ name: 'NotePage', params: { role: this.role } });
     },
@@ -280,37 +319,6 @@ export default {
       const minutes = diffMins % 60;
 
       return `${hours}h ${minutes}m`;
-    },
-    fetchPresences() {
-      const studentId = Cookies.get('StudentId');
-
-      axios.get('/presences/', { params: { student_id: studentId } })
-        .then(response => {
-          this.absences = response.data.filter(p => p.is_abscent).slice(-5);
-          this.retards = response.data.filter(p => p.is_late).slice(-5);
-        })
-        .catch(error => {
-          console.error('Erreur lors de la récupération des présences:', error);
-        });
-    },
-    fetchDocuments() {
-      axios.get('/documents/')
-        .then(response => {
-          this.documents = response.data.slice(-5);
-        })
-        .catch(error => {
-          console.error("There was an error fetching the documents!", error);
-        });
-    },
-    fetchNotes() {
-      const studentId = Cookies.get('UserId');
-      axios.get('/notes/', { params: { student_id: studentId } }, { withCredentials: true })
-        .then(response => {
-          this.notes = response.data.notes.slice(-5);
-        })
-        .catch(error => {
-          console.error("There was an error fetching the notes!", error);
-        });
     },
     logout() {
       axios.post('/logout/', {}, { withCredentials: true })

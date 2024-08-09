@@ -1,14 +1,14 @@
 <template>
   <div class="wrapper">
     <aside :class="{ expand: isSidebarExpanded }" id="sidebar">
-        <div class="d-flex">
-            <button class="toggle-btn" type="button" @click="toggleSidebar">
-                <i class="fa-solid fa-grip"></i>
-            </button>
-            <div class="sidebar-logo">
-                <a href="#"></a>
-            </div>
+      <div class="d-flex">
+        <button class="toggle-btn" type="button" @click="toggleSidebar">
+          <i class="fa-solid fa-grip"></i>
+        </button>
+        <div class="sidebar-logo">
+          <a href="#"></a>
         </div>
+      </div>
         <ul class="sidebar-nav">
             <li class="sidebar-item">
                 <a @click="navigateToHome" class="sidebar-link">
@@ -128,6 +128,7 @@
       };
     },
     mounted() {
+      this.toggleSidebar();
       this.getUserFromCookies();
     },
     methods: {
@@ -167,7 +168,7 @@
         this.$router.push({ name: 'AccountPage', params: { role: this.role } });
       },
       toggleSidebar() {
-      this.isSidebarExpanded = !this.isSidebarExpanded;
+        this.isSidebarExpanded = !this.isSidebarExpanded;
       },
       logout() {
         axios.post('/logout/', {}, { withCredentials: true })

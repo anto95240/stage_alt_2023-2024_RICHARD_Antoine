@@ -11,6 +11,7 @@ class Note(models.Model):
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='taught_note', verbose_name="Enseignant")
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrolled_note', blank=True, verbose_name="Étudiants")
     total_score = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Noté sur")
+    date = models.DateField(auto_now_add=True, verbose_name="Date d'ajout")
     class Meta:
         ordering = ('-id',)
 

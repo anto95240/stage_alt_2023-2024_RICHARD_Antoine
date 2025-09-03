@@ -20,10 +20,10 @@ class Presence(models.Model):
         ordering = ('-id',)
 
     def __str__(self):
-        students_names = ", ".join([f"{student.first_name} {student.last_name}" for student in self.Student.all()])
-        if self.IsAbscent :
+        students_names = ", ".join([f"{student.first_name} {student.last_name}" for student in self.student.all()])
+        if self.is_abscent :
             return  f"{students_names} - absent le {self.date} de {self.absence_start_time} à {self.absence_end_time}"
-        elif self.IsLate :
+        elif self.is_late :
             return  f"{students_names} - retard de {self.late_duration} minutes, le {self.date}"
         else:
             return students_names

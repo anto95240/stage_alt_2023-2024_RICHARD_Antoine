@@ -1,0 +1,43 @@
+# Fichiers Python compilés
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Environnement virtuel
+env/
+venv/
+.venv/
+
+# Base de données locale (ne jamais la pousser)
+db.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Dossiers des migrations de tests temporaires (optionnel)
+back_side/doc/migrations/__pycache__/
+back_side/back_side/__pycache__/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+.bin
+node_modules
+dist
+build
+coverage
+
+# Fichiers IDE / éditeurs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Static / media générés (si tu les rebuilds)
+staticfiles/
+media/
+
+# Secrets / fichiers de configuration locaux
+.env

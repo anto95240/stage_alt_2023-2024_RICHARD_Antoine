@@ -1,0 +1,24 @@
+{
+  "name": "font_side",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "core-js": "^3.45.1",
+    "js-cookie": "^3.0.5",
+    "vue": "^3.5.18",
+    "vue-cal": "^4.10.2",
+    "vue-router": "^4.5.1",
+    "vuex": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "^7.1.4"
+  }
+}
